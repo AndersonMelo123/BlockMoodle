@@ -1,59 +1,72 @@
 import React, { Component } from 'react';
-import { Card, Button } from 'semantic-ui-react';
+import { Button, Card, Image,  Grid, Menu, Segment } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
-import Layout from '../components/Layout';
-import { Link } from '../routes';
+import Layout from '../components/layout';
+import Session from '../utils/session';
+import Link from 'next/link';
 
-class CampaignIndex extends Component {
+export default class CampaignIndex extends Component {
 
-    state = {
-        length: '',
-        docs: []
-    }
+    static async getInitialProps({req, res}) {
 
-    /*async componentDidMount() {
-        const length = await factory.methods.getLength().call();
-
-        this.setState({length});
-
-        try {
-            let docs = [];
-            for (let i = 0; i < length; i++) {
-            
-                const file = await factory.methods.getDoc(i).call();
-                
-                //console.log('ddddddddddd', JSON.stringify(file));
-
-                docs.push(JSON.stringify(file));
-
-                //console.log('=========================================', docs);
-
-                this.setState({ docs });
-            }
-  
-        } catch (error) {
-            console.log('mmmmmmm', error);
+        let props = {
+            session: '',
+            docs: [],
         }
-    }*/
-
-    static async getInitialProps() {
+          
+        if (req && req.session) {
+            props.session = req.session
+        } else {
+            props.session = await Session.getSession()
+        }
+      
+        if (!props.session || !props.session.loggedin) {
+            if (req) {
+                res.redirect('/login')
+            } else {
+              Router.push('/login')
+            }
+        }
 
         const length = await factory.methods.getLength().call();
 
-        let docs = [];
+        //let docs = [];
         for (let i = 0; i < length; i++) {
             
             const file = await factory.methods.docs(i).call();
                 
-            docs.push(file);
+            props.docs.push(file);
         }
+
+        console.log(props.docs);
   
-        return { docs };
+        return props;
     }
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            name: '',
+            address: '',
+            message: null,
+            messageStyle: null,
+            length: '',
+            docs: [],
+            
+        }
+        this.handleChange = this.handleChange.bind(this)
+        //this.setProfile = this.setProfile.bind(this)
+    }
+
+    handleChange(event) {
+        this.setState({
+          [event.target.name]: event.target.value
+        })
+      }
 
     renderCampaigns() {
 
-        console.log('Aqui', this.props.docs[0]);
+        //console.log('Aqui', this.props.docs[0]);
 
         const items = this.props.docs.map(address => {
 
@@ -64,41 +77,40 @@ class CampaignIndex extends Component {
               header: address.description,
               description: address.doc,
               meta: data,
-              fluid: true
+              fluid: false,
             };
         });
 
         return <Card.Group items={items} />;
     
     }
-    
 
     render() {
+
         return (
-
-        <Layout>
-            <div>
-                <h3>Relatórios</h3>
-                
-                <Link route="/relatorios/new">
-                    <a>
-                        <Button
-                            floated="right"
-                            content="Gerar Relatório"
-                            icon="add"
-                            primary
-                        />
-                    </a>
-                </Link>
+            <Layout {...this.props}>
 
                 
-                
-                {this.renderCampaigns()}
-            
-            </div>
-        </Layout>
+                            <div>
+                                <h3>Relatórios</h3>
+                                
+                                <Link prefetch href="/relatorios/new">
+                                    <a>
+                                        <Button
+                                            floated="right"
+                                            content="Gerar Relatório"
+                                            icon="add"
+                                            primary
+                                        />
+                                    </a>
+                                </Link>
+
+                                {this.renderCampaigns()}
+                            
+                            </div>
+                                     
+            </Layout>
+
         );
     }
 }
-
-export default CampaignIndex;

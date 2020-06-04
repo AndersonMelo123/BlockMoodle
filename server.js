@@ -1,27 +1,6 @@
-/*const { createServer } = require('http');
 const next = require('next');
-
 const express = require('express');
-//const session = require('express-session');
-const bodyParser = require('body-parser');
-
-const app = next({
-    dev: process.env.NODE_ENV !== 'production'
-});
-
-const routes = require('./routes');
-const handler = routes.getRequestHandler(app);
-
-app.prepare().then(() => {
-  createServer(handler).listen(3000, err => {
-    if (err) throw err;
-    console.log('Ready on localhost:3000');
-  });
-});*/
-
-const next = require('next')
-const express = require('express')
-//const session = require('express-session');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 
 const routes = {
@@ -36,17 +15,17 @@ const handle = app.getRequestHandler()
 app.prepare().then(() => {
   const server = express()
 
-  /*server.use(session({
+  server.use(session({
     secret: 'nextjs-express-mysql-starter',
     resave: false,
     cookie: { maxAge: 8*60*60*1000 },  // 8 hours
     saveUninitialized: false
-  }));*/
+  }));
 
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(bodyParser.json());
 
-  //server.use('/fonts/ionicons', express.static('./node_modules/ionicons/dist/fonts'))
+  server.use('/fonts/ionicons', express.static('./node_modules/ionicons/dist/fonts'))
 
   routes.auth(server)
 

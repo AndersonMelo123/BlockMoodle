@@ -1,19 +1,46 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layout';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
+import Session from '../../utils/session';
 //import { Router } from '../../routes';
 
-class RelatorioNew extends Component {
+export default class RelatorioNew extends Component {
 
-    state = {
-        descricao: '',
-        errorMessage: '',
-        loading: false,
-        hash: ''
-    };
+    static async getInitialProps({req, res}) {
+        
+        let props = {
+            session: ''
+        }
+        
+        if (req && req.session) {
+            props.session = req.session
+        } else {
+            props.session = await Session.getSession()
+        }
+    
+        if (!props.session || !props.session.loggedin) {
+            if (req) {
+                res.redirect('/login')
+            } else {
+                Router.push('/login')
+            }
+        }
+        
+        return props
+    }
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            descricao: '',
+            errorMessage: '',
+            loading: false,
+            hash: ''
+        }
+    }
 
     async componentDidMount() {
         this.getProfile()
@@ -52,7 +79,7 @@ class RelatorioNew extends Component {
     render() {
         
         return (
-            <Layout>
+            <Layout {...this.props}>
                 <h3>Gerar Relatório</h3>
 
                 <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
@@ -80,4 +107,3 @@ class RelatorioNew extends Component {
     }
 }
 
-export default RelatorioNew;
