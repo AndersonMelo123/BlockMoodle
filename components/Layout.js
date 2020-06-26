@@ -1,7 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { Container, Navbar, NavbarBrand, Nav, NavItem, Button } from 'reactstrap'
+import { 
+  Container,
+  Navbar, 
+  NavbarBrand, 
+  Nav, 
+  NavItem, 
+  Button,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem} from 'reactstrap'
+import Package from '../package'
 import Styles from '../css/index.scss'
 
 export default class extends React.Component {
@@ -19,7 +31,10 @@ export default class extends React.Component {
     this.state = {
     }
   }
-  
+
+
+  //const toggle = () => setIsOpen(!isOpen);
+
   render() {
     return (
       <React.Fragment>
@@ -40,20 +55,48 @@ export default class extends React.Component {
             </NavbarBrand>
           </Link>
 
+          <Nav className="mr-auto" navbar>
+            <NavItem>
+              <NavLink href="/components/">Components</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="https://github.com/AndersonMelo123/BlockMoodle">GitHub</NavLink>
+            </NavItem>
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret>
+                Relatórios
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>
+                <NavLink href="/relatorios/new">Usuários</NavLink>
+                </DropdownItem>
+                <DropdownItem>
+                  Alunos
+                </DropdownItem>
+                <DropdownItem>
+                  Disciplinas
+                </DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem>
+                  Reset
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </Nav>
+
           <SignOutButton {...this.props} />
 
         </Navbar>
 
-
+    
+        
         <MainBody fluid={this.props.fluid}>
-
           
-            
           {this.props.children}
           
 
         </MainBody>
-        
+
       </React.Fragment>
     )
   }

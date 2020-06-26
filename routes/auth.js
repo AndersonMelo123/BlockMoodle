@@ -7,6 +7,8 @@ var ejs = require("ejs");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+//var express = require('express');
+
 module.exports = (server) => {
 
   if (server === null) {
@@ -40,16 +42,17 @@ module.exports = (server) => {
       if(err){
         console.log('err1',err);
       } else {
-        pdf.create(html, options).toFile("./meupdflindao.pdf", (err, res) => {
+        pdf.create(html, options).toFile("./arquivo.pdf", (err, res) => {
+          //console.log('RERSSSS', res); // endereço q criou o pdf
           if(err) {
             console.log('err2',err);
           }else{
-            fs.readFile('./meupdflindao.pdf', 'utf-8', function (err, dataresult) {
+            fs.readFile('./arquivo.pdf', 'utf-8', function (err, dataresult) {
               if(err){
                 console.log('err3',err);
               }
               const a = sha256(dataresult);
-              
+              //dataresult.download('./meupdflindao.pdf');
               return resp.json({chave: a});
             });
           }
@@ -57,7 +60,6 @@ module.exports = (server) => {
       }
     });
   })
-
 
   //*********************************************************************************************/
 
@@ -166,4 +168,67 @@ module.exports = (server) => {
       return res.status(403)
     }
   })
+
+  //=========================================================================
+  const fileWorker = require('../controllers/file.controller');
+	
+  server.get('/api/files/getall', fileWorker.listAllFiles);
+  
+  server.post('/api/files/upload', async (req, res) => {
+    try {
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            let myFile = req.files.myFile;
+
+            myFile.mv('./uploads/' + myFile.name);
+
+            //send response
+            res.send({
+                status: true,
+                message: 'File is uploaded',
+                data: {
+                    name: myFile.name,
+                    mimetype: myFile.mimetype,
+                    size: myFile.size,
+                }
+            });
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+  });
+
+  server.post('/api/files/validar', async (req, res)=>{
+
+    const a = req.body;
+
+    console.log('req a ======= ', a.nameFile);
+    
+    const hash = []
+
+    fs.readFile('./uploads/' + a.nameFile, 'utf-8', function (err, dataresult) {
+      if(err){
+        console.log('err3',err);
+      }
+      console.log(sha256(dataresult));
+      
+      hash.push(sha256(dataresult));
+
+      console.log(hash[0]);
+      
+      res.send({
+        status: true,
+        message: 'File is valid',
+        data: {
+            hash: hash[0]
+        }
+      });
+    });
+  })
+	//server.get('/api/files/:filename', fileWorker.downloadFile);
+
 }

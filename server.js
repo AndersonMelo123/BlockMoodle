@@ -2,6 +2,10 @@ const next = require('next');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+//var router = express.Router();
+//var upload = require('./utils/multer.config.js');
+//require('./routes/file.router.js')(router, upload);
 
 const routes = {
   auth: require('./routes/auth')
@@ -12,6 +16,9 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+//server.use(express.static('resources')); // <<<<<<===============================
+
+
 app.prepare().then(() => {
   const server = express()
 
@@ -20,6 +27,11 @@ app.prepare().then(() => {
     resave: false,
     cookie: { maxAge: 8*60*60*1000 },  // 8 hours
     saveUninitialized: false
+  }));
+
+  // enable files upload
+  server.use(fileUpload({
+    createParentPath: true
   }));
 
   server.use(bodyParser.urlencoded({ extended: true }));

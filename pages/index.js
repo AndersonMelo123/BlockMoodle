@@ -38,7 +38,7 @@ export default class CampaignIndex extends Component {
             props.docs.push(file);
         }
 
-        console.log(props.docs);
+        //console.log('docs: ', props.docs);
   
         return props;
     }
@@ -63,7 +63,7 @@ export default class CampaignIndex extends Component {
           [event.target.name]: event.target.value
         })
       }
-
+      
     renderCampaigns() {
 
         //console.log('Aqui', this.props.docs[0]);
@@ -77,10 +77,10 @@ export default class CampaignIndex extends Component {
               header: address.description,
               description: address.doc,
               meta: data,
-              fluid: false,
+              fluid: false
             };
         });
-
+        //href:'/relatorios/new'
         return <Card.Group items={items} />;
     
     }
