@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
-import { Form, Button, Input, Icon, Message, Grid} from 'semantic-ui-react';
+import { Form, Button, Input, Icon, Message, Grid, Modal, Header} from 'semantic-ui-react';
 import Layout from '../../components/layout';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
@@ -14,7 +14,9 @@ export default class RelatorioNew extends Component {
 
     static async getInitialProps({req, res}) {
         let props = {
-            session: ''
+            session: '',
+            docs: [],
+            len: 0,
         }
         if (req && req.session) {
             props.session = req.session
@@ -28,6 +30,21 @@ export default class RelatorioNew extends Component {
                 Router.push('/login')
             }
         }
+
+        const length = await factory.methods.getLength().call();
+
+        props.len = length;
+
+        for (let i = 0; i < length; i++) {
+            
+            const file = await factory.methods.docs(i).call();
+                
+            props.docs.push(file);
+        }
+
+        console.log('docs: ', props.docs[0].doc);
+        console.log('len: ', props.len);
+
         return props
     }
 
@@ -39,7 +56,10 @@ export default class RelatorioNew extends Component {
             loading: false,
             hash: '',
             selectedFile: [],
-            nameFile: ''
+            nameFile: '',
+            hashFile: [],
+            deuCerto: '',
+            modalOpen: false
         }
     }
 
@@ -110,18 +130,35 @@ export default class RelatorioNew extends Component {
         //console.log('selectedFile', this.state.selectedFile[0]);
     }
 
-    validar = () => {
+    validar = async () => {
 
         const formData = new FormData();
         formData.append('nameFile', this.state.nameFile);
 
-        fetch("/api/files/validar", {
+        await fetch("/api/files/validar", {
             method: 'POST',
             body: formData
         })
         .then(res => res.json())
-        .then(json => console.log(json))
+        .then(json => this.state.hashFile.push(json.data.hash))
         .catch(err => console.error(err));
+
+        console.log('this.state.hashFile', this.state.hashFile[0]);
+        console.log('this.props.len', this.props.len);
+
+        for (let i = 0; i < this.props.len; i++) {
+            //console.log('num '+i+' :', this.props.docs[i].doc);
+            if (this.props.docs[i].doc == this.state.hashFile[0]) {
+                console.log('deu certo');
+                this.setState({deuCerto: 'Validado!'});
+
+                console.log('deuCerto -----', this.state.deuCerto);
+            } else {
+                console.log('deu errado');
+            }
+        }
+
+        this.setState({ modalOpen: true })
     }
 
     onUpload = () => {
@@ -144,6 +181,10 @@ export default class RelatorioNew extends Component {
         //this.validar();
         
     }
+
+    handleOpen = () => this.setState({ modalOpen: true })
+
+    handleClose = () => this.setState({ modalOpen: false })
 
     render() {
     
@@ -182,7 +223,7 @@ export default class RelatorioNew extends Component {
                     
                     <Grid.Column>
                         <h5>Validar Relatório</h5>
-                        <Form onSubmit={this.onUpload} error={!!this.state.errorMessage}>
+                        <Form error={!!this.state.errorMessage}>
                             <label>Enviar um arquivo</label>
                             <Form.Group>
                                 <Form.Input
@@ -200,14 +241,28 @@ export default class RelatorioNew extends Component {
                                 
                             </Form.Group>
 
-                            
-
-
-                            <Button onClick={this.validar} primary>
-                                <Icon name='check square outline' />
-                                Validar
-                            </Button>
+                    
+                    
+                            <Modal
+                                trigger={<Button onClick={this.validar} primary><Icon name='check square outline'/>Validar</Button>}
+                                open={this.state.modalOpen}
+                                onClose={this.handleClose}
+                                size='tiny'
+                                centered={false}>
+                                <Header icon='file alternate outline' content='Válido' />
+                                <Modal.Content>
+                                <h3>O arquivo é válido e se encontra na Blockchain</h3>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                <Button color='green' onClick={this.handleClose} inverted>
+                                    <Icon name='checkmark' /> Ok
+                                </Button>
+                                </Modal.Actions>
+                            </Modal>
+                        
                         </Form> 
+
+                        <Message success content = {this.state.deuCerto}/>
                     </Grid.Column>
                 </Grid.Row>
                 </Grid>
