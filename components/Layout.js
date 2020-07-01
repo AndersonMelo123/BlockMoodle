@@ -57,7 +57,7 @@ export default class extends React.Component {
 
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/components/">Components</NavLink>
+              <NavLink href="/sobre">Sobre</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://github.com/AndersonMelo123/BlockMoodle">GitHub</NavLink>
@@ -68,17 +68,16 @@ export default class extends React.Component {
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>
-                <NavLink href="/relatorios/new">Usuários</NavLink>
+                <NavLink href="/relatorios/user">Usuários</NavLink>
                 </DropdownItem>
                 <DropdownItem>
-                  Alunos
+                <NavLink href="/relatorios/cursos">Cursos</NavLink>
                 </DropdownItem>
                 <DropdownItem>
-                  Disciplinas
+                <NavLink href="/relatorios/notas">Notas</NavLink>
                 </DropdownItem>
-                <DropdownItem divider />
                 <DropdownItem>
-                  Reset
+                <NavLink href="/relatorios/atividades">Atividades</NavLink>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

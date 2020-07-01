@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Documento</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        h4 {
+            text-align: center;
+            color: #3d3d5c;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+</head>
+<body>
+    <table>
+        <tr>
+          <td style="border: 0px solid #dddddd"><img src='https://upload.wikimedia.org/wikipedia/commons/8/83/Bras%C3%A3o_UFRPE.png' height="118" width="90" /></td>
+          <td style="text-align: center; color: #3d3d5c; border: 0px solid #dddddd">
+            <h3>UNIVERSIDADE FEDERAL RURAL DE PERNAMBUCO</h3>
+            <h4>CNPJ: 24.416.174/0001-06</h4>
+            <h4>DEPARTAMENTO DE REGISTRO DIGITAL</h4>
+        </td>
+        </tr>
+       
+      </table>
+
+    <hr>
+
+    <h4>RELATÓRIO DE USUÁRIOS CADASTRADOS</h4>
+    <p> Este relatório apresenta os dados dos usuários cadastrados na plataforma moodle, no dia <%= data %> às <%= hora %>.
+    </p>
+
+    <table>
+        <tr>
+          <th>ID</th>
+          <th>Sigla</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Início</th>
+          <th>Final</th>
+        </tr>
+
+        <% for(var i=0; i<cursos.length; i++){ %>
+			  <tr>      
+          <td><%=cursos[i].id%></td>
+          <td><%=cursos[i].shortname%></td>
+          <td><%=cursos[i].fullname%></td>
+          <td><%=cursos[i].category%></td>
+          <td>
+            <%
+              var d = new Date(cursos[i].startdate * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();%>
+
+              <%= date %>
+          </td>
+          <td>
+            <%
+              var d2 = new Date(cursos[i].enddate * 1000);
+              var months2 = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date2 = d2.getDate() +'/'+ months2[d2.getMonth()] +'/'+ d2.getFullYear();%>
+
+              <%= date2 %>
+          </td>
+			  </tr>
+		    <% } %>
+    </table>
+
+    <h4 style="color: black;">RECIFE, <%= data %></h4>
+</body>
+</html>

@@ -7,8 +7,6 @@ var ejs = require("ejs");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-//var express = require('express');
-
 module.exports = (server) => {
 
   if (server === null) {
@@ -20,6 +18,30 @@ module.exports = (server) => {
     try {
       const results = await pool.query(`SELECT a.firstname, a.lastname, a.email, a.timecreated FROM mdl_user as a`)
       
+      return results[0];
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getCurso() {
+    
+    try {
+      const results = await pool.query(`SELECT c.id,c.shortname,c.fullname,c.startdate,c.enddate,ct.name AS category FROM mdl_course c INNER JOIN mdl_course_categories ct ON c.category=ct.id WHERE c.format != 'site'`)
+      
+      console.log('RESULTS', results);
+      return results[0];
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getNotas() {
+    
+    try {
+      const results = await pool.query(`SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2`)
+      
+      console.log('RESULTS', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -43,7 +65,6 @@ module.exports = (server) => {
         console.log('err1',err);
       } else {
         pdf.create(html, options).toFile("./arquivo.pdf", (err, res) => {
-          //console.log('RERSSSS', res); // endereço q criou o pdf
           if(err) {
             console.log('err2',err);
           }else{
@@ -52,7 +73,6 @@ module.exports = (server) => {
                 console.log('err3',err);
               }
               const a = sha256(dataresult);
-              //dataresult.download('./meupdflindao.pdf');
               return resp.json({chave: a});
             });
           }
@@ -61,6 +81,71 @@ module.exports = (server) => {
     });
   })
 
+  server.get('/auth/profile_cursos', async (req, resp) => {
+    
+    const results = await getCurso();
+
+    var timestamp = new Date().getTime();
+    var d = new Date(timestamp);
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
+    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
+
+    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+
+    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_cursos.ejs", {data: data, hora: hora, cursos: results}, (err, html) => {
+      if(err){
+        console.log('err1',err);
+      } else {
+        pdf.create(html, options).toFile("./arquivo_curso.pdf", (err, res) => {
+          if(err) {
+            console.log('err2',err);
+          }else{
+            fs.readFile('./arquivo_curso.pdf', 'utf-8', function (err, dataresult) {
+              if(err){
+                console.log('err3',err);
+              }
+              const a = sha256(dataresult);
+              return resp.json({chave: a});
+            });
+          }
+        });
+      }
+    });
+  })
+
+  server.get('/auth/profile_notas', async (req, resp) => {
+    
+    const results = await getNotas();
+
+    var timestamp = new Date().getTime();
+    var d = new Date(timestamp);
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
+    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
+
+    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+
+    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_notas.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
+      if(err){
+        console.log('err1',err);
+      } else {
+        pdf.create(html, options).toFile("./arquivo_notas.pdf", (err, res) => {
+          if(err) {
+            console.log('err2',err);
+          }else{
+            fs.readFile('./arquivo_notas.pdf', 'utf-8', function (err, dataresult) {
+              if(err){
+                console.log('err3',err);
+              }
+              const a = sha256(dataresult);
+              return resp.json({chave: a});
+            });
+          }
+        });
+      }
+    });
+  })
   //*********************************************************************************************/
 
 
@@ -171,8 +256,58 @@ module.exports = (server) => {
 
   //=========================================================================
   const fileWorker = require('../controllers/file.controller');
+  const uploadFolder = 'C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/';
 	
-  server.get('/api/files/getall', fileWorker.listAllFiles);
+  server.get('/api/files/getall', async (req, res) => {
+    var relatorio = [];
+    try {
+      fs.readdir(uploadFolder, (err, files) => {
+      for (let i = 0; i < files.length; i++) {
+        console.log(files[i]);
+        if (files[i] == 'arquivo.pdf'){
+          relatorio.push(files[i]);
+        }	
+      }
+      res.download(relatorio[0]);
+    })	
+    } catch (error) {
+      res.status(500).send(err);
+    }
+  });
+
+  server.get('/api/files/getall_cursos', async (req, res) => {
+    var relatorio = [];
+    try {
+      fs.readdir(uploadFolder, (err, files) => {
+      for (let i = 0; i < files.length; i++) {
+        console.log(files[i]);
+        if (files[i] == 'arquivo_curso.pdf'){
+          relatorio.push(files[i]);
+        }	
+      }
+      res.download(relatorio[0]);
+    })	
+    } catch (error) {
+      res.status(500).send(err);
+    }
+  });
+
+  server.get('/api/files/getall_notas', async (req, res) => {
+    var relatorio = [];
+    try {
+      fs.readdir(uploadFolder, (err, files) => {
+      for (let i = 0; i < files.length; i++) {
+        console.log(files[i]);
+        if (files[i] == 'arquivo_notas.pdf'){
+          relatorio.push(files[i]);
+        }	
+      }
+      res.download(relatorio[0]);
+    })	
+    } catch (error) {
+      res.status(500).send(err);
+    }
+  });
   
   server.post('/api/files/upload', async (req, res) => {
     try {
@@ -229,6 +364,5 @@ module.exports = (server) => {
       });
     });
   })
-	//server.get('/api/files/:filename', fileWorker.downloadFile);
 
 }

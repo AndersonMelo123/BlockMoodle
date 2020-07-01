@@ -7,6 +7,7 @@ contract Moodle{
         uint timestamp;
         address sender;
         string doc;
+        uint tipo;
     }
     
     address public manager;
@@ -19,13 +20,14 @@ contract Moodle{
         manager = msg.sender;
     }
     
-    function createReport(string memory description, string memory valor) public {
+    function createReport(string memory description, string memory valor, uint tipo) public {
         
         Report memory newReport = Report({
             description: description,
             timestamp: now,
             sender: msg.sender,
-            doc: valor
+            doc: valor,
+            tipo: tipo
         });
     
         position[valor] = index;
@@ -36,7 +38,7 @@ contract Moodle{
         docs.push(newReport);
     }
     
-    function isValid(string memory valor) public view returns (string memory, uint, address, string memory){
+    function isValid(string memory valor) public view returns (string memory, uint, address, string memory, uint){
         if (isTrue[valor]) {
             uint i = position[valor];
             Report memory doc = docs[i];
@@ -44,18 +46,20 @@ contract Moodle{
                 doc.description,
                 doc.timestamp,
                 doc.sender,
-                doc.doc
+                doc.doc,
+                doc.tipo
             );
         }
     }
     
-    function getDoc(uint i) public view returns (string memory, uint, address, string memory) {
+    function getDoc(uint i) public view returns (string memory, uint, address, string memory, uint) {
         Report memory doc = docs[i];
         return (
             doc.description,
             doc.timestamp,
             doc.sender,
-            doc.doc
+            doc.doc,
+            doc.tipo
         );
     }
     
