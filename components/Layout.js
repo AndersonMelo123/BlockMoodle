@@ -127,15 +127,7 @@ export default class extends React.Component {
           
           </MainBody>
 
-          <Container fluid={this.props.fluid} className='footer'>
-            <hr/>
-            <p className="text-muted small" style={{textAlign: "center"}}>
-              <Link href="https://github.com/AndersonMelo123/BlockMoodle"><a className="text-muted font-weight-bold"><span className="icon ion-logo-github"/> {Package.name} {Package.version}</a></Link>
-              <span> criado por </span>
-              <Link href="http://lattes.cnpq.br/4825772150496499"><a className="text-muted font-weight-bold">Anderson Melo</a></Link>
-              <span className="ml-2">&copy; {new Date().getYear() + 1900}.</span>
-            </p>
-          </Container>
+          
   
         </React.Fragment>
         

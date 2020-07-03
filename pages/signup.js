@@ -1,7 +1,7 @@
 import React from 'react'
 import Router from 'next/router'
 import Link from 'next/link'
-import { Row, Col, Card, CardHeader, CardBody, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Row, Col, Card, CardHeader, CardBody, Container, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import Layout from '../components/layout'
 import Session from '../utils/session'
 
@@ -151,45 +151,49 @@ export default class extends React.Component {
       )
     } else {
       return (
-        <div>
-          <Row className="mt-5">
-            <Col xs="12" sm={{ size: 8, offset: 2 }} md={{ size: 6, offset: 3 }}>
-              <Card>
-                <CardHeader>Cadastrar</CardHeader>
-                <CardBody>
-                  <Form onSubmit={this.handleSignUp}>
-                    <FormGroup>
-                      <Label for="userName">Nome:</Label>
-                      <Input name="name" id="userName" value={this.state.name} onChange={this.handleNameChange} />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="userAddress">Endereço:</Label>
-                      <Input name="address" id="userAddress" value={this.state.address} onChange={this.handleAddressChange} />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="userEmail">Email:</Label>
-                      <Input type="email" name="email" id="userEmail" placeholder="examplo@gmail.com" value={this.state.email} onChange={this.handleEmailChange} />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="userPassword">Senha:</Label>
-                      <Input type="password" name="password" id="userPassword" placeholder="" value={this.state.password} onChange={this.handlePasswordChange} />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="userConfirmPassword">Confirmar Senha:</Label>
-                      <Input type="password" name="confirmPassword" id="userConfirmPassword" placeholder="" value={this.state.confirmPassword} onChange={this.handleConfirmPasswordChange} />
-                    </FormGroup>
-                    <Button type="submit">Cadastrar</Button>
-                  </Form>
-                </CardBody>
-              </Card>
-              <br />
-              {alert}
-            </Col>
-          </Row>
-          <p className="text-center lead">
-            <Link href="/login"><a>Voltar</a></Link>
-          </p>
-        </div>
+        <Layout {...this.props}>
+          <Container>
+            <Row xs="1">
+              <Col xs="12" sm={{ size: 8, offset: 2 }} md={{ size: 6, offset: 3 }}>
+                <Card>
+                  <CardHeader>
+                    <h5>Cadastrar</h5>
+                  </CardHeader>
+                    <CardBody>
+                      <Form onSubmit={this.handleSignUp}>
+                        <FormGroup>
+                          <Label for="userName">Nome:</Label>
+                          <Input name="name" id="userName" value={this.state.name} onChange={this.handleNameChange} />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="userAddress">Endereço:</Label>
+                          <Input name="address" id="userAddress" value={this.state.address} onChange={this.handleAddressChange} />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="userEmail">Email:</Label>
+                          <Input type="email" name="email" id="userEmail" placeholder="examplo@gmail.com" value={this.state.email} onChange={this.handleEmailChange} />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="userPassword">Senha:</Label>
+                          <Input type="password" name="password" id="userPassword" placeholder="" value={this.state.password} onChange={this.handlePasswordChange} />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="userConfirmPassword">Confirmar Senha:</Label>
+                          <Input type="password" name="confirmPassword" id="userConfirmPassword" placeholder="" value={this.state.confirmPassword} onChange={this.handleConfirmPasswordChange} />
+                        </FormGroup>
+                        <Button outline color="success" type="submit">Cadastrar</Button>
+                      </Form>
+                    </CardBody>
+                </Card>
+                <br />
+                {alert}
+              </Col>
+            </Row>
+              <p className="text-center lead">
+                <Link href="/login"><a>Voltar</a></Link>
+              </p>
+          </Container>
+        </Layout>
       )
     }
   }
