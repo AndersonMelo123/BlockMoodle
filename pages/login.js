@@ -83,6 +83,7 @@ export default class extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
+      console.log('response', response);
       if (response.loggedin) {
         Router.push(`/`)
       } else if (response.message) {
@@ -155,8 +156,8 @@ export default class extends React.Component {
               
                 <Col md={{ size: 4, offset: 0 }}>
                   <Card>
-                      <CardImg top width="240" src="https://is4-ssl.mzstatic.com/image/thumb/Purple113/v4/ee/91/eb/ee91ebc6-f7e6-2fa2-356e-d5930900691b/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png" alt="Girl in a jacket"/>
-                      <CardHeader>Login</CardHeader>
+                      <CardImg top width="140" src="https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/logo.png?raw=true" alt="Girl in a jacket"/>
+                      
                       <CardBody>
                       <Form onSubmit={this.handleLogin}>
                           <FormGroup>
@@ -167,15 +168,17 @@ export default class extends React.Component {
                           <Label for="userPassword">Senha</Label>
                           <Input type="password" name="password" id="userPassword" placeholder="" value={this.state.password} onChange={this.handlePasswordChange} />
                           </FormGroup>
-                          <Button type="submit">Login</Button>
+                          <Button outline color="success" type="submit" style={{align: 'right'}}>Login</Button>
                       </Form>
                       </CardBody>
+                      <hr/>
+                      <p style={{textAlign: 'center', marginBottom: '10px'}}>
+                        Se não tiver uma conta: <Link href="/signup"><a>cadastrar</a></Link>
+                      </p>
                   </Card>
                   <br />
                   {alert}
-                  <p className="text-center lead">
-                      Se não tiver uma conta: <Link href="/signup"><a>cadastrar</a></Link>
-                  </p>
+                  
                 </Col>
               </Row>
           

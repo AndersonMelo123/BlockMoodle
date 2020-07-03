@@ -39,9 +39,6 @@ export default class CampaignIndex extends Component {
                 
             props.docs.push(file);
         }
-
-        //console.log('docs: ', props.docs[0].doc);
-        console.log('len: ', props.len);
   
         return props;
     }
@@ -64,7 +61,6 @@ export default class CampaignIndex extends Component {
             hashFile: [],
         }
         this.handleChange = this.handleChange.bind(this)
-        //this.setProfile = this.setProfile.bind(this)
     }
 
     handleChange(event) {
@@ -105,11 +101,7 @@ export default class CampaignIndex extends Component {
     }
 
     fileSelectedHandler = event => {
-        console.log('event.target.files[0]', event.target.files[0])
-
         this.state.selectedFile.push(event.target.files[0]);
-
-        //console.log('selectedFile', this.state.selectedFile[0]);
     }
 
     validar = async () => {
@@ -125,16 +117,9 @@ export default class CampaignIndex extends Component {
         .then(json => this.state.hashFile.push(json.data.hash))
         .catch(err => console.error(err));
 
-        console.log('this.state.hashFile', this.state.hashFile[0]);
-        console.log('this.props.len', this.props.len);
-
         for (let i = 0; i < this.props.len; i++) {
-            //console.log('num '+i+' :', this.props.docs[i].doc);
             if (this.props.docs[i].doc == this.state.hashFile[0]) {
-                console.log('deu certo');
-                
                 this.setState({validacao: 1});
-                console.log('deuCerto -----', this.state.retorno);
             } else {
                 console.log('deu errado');
             }
@@ -152,16 +137,11 @@ export default class CampaignIndex extends Component {
     onUpload = async () => {
         
         if (this.state.selectedFile.length == 0) {
-            console.log('Parou tudo');
             this.setState({retorno: 'Insira um arquivo para ser validado!'});
             this.setState({ modalOpen: true });
         } else{
             const formData = new FormData()
-            //formData.append('myFile', this.state.selectedFile, this.state.selectedFile.name);
             formData.append('myFile', this.state.selectedFile[0]);
-
-            console.log('selectedFile >==>', this.state.selectedFile[0]);
-            console.log('formData', formData);
 
             await fetch('/api/files/upload', {
                 method: 'POST',
@@ -181,9 +161,7 @@ export default class CampaignIndex extends Component {
         this.forceUpdate();
     };
 
-    handleClose = () => {
-        //this.setState({ selectedFile: [] });
-        
+    handleClose = () => {        
         this.setState({ modalOpen: false });
         this.forceUpdateHandler();
     }
