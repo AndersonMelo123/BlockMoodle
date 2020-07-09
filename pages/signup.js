@@ -175,13 +175,13 @@ export default class extends React.Component {
                         </FormGroup>
                         <FormGroup>
                           <Label for="userPassword">Senha:</Label>
-                          <Input type="password" name="password" id="userPassword" placeholder="" value={this.state.password} onChange={this.handlePasswordChange} />
+                          <Input type="password" name="password" id="userPassword" placeholder="Insira letras e números" value={this.state.password} onChange={this.handlePasswordChange} style={{width: '50%'}}/>
                         </FormGroup>
                         <FormGroup>
                           <Label for="userConfirmPassword">Confirmar Senha:</Label>
-                          <Input type="password" name="confirmPassword" id="userConfirmPassword" placeholder="" value={this.state.confirmPassword} onChange={this.handleConfirmPasswordChange} />
+                          <Input type="password" name="confirmPassword" id="userConfirmPassword" placeholder="Repita a sua senha" value={this.state.confirmPassword} onChange={this.handleConfirmPasswordChange} style={{width: '50%'}}/>
                         </FormGroup>
-                        <Button outline color="success" type="submit">Cadastrar</Button>
+                        <Button outline color="success" type="submit" className='botão'>Cadastrar</Button>
                       </Form>
                     </CardBody>
                 </Card>

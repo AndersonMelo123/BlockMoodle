@@ -164,7 +164,7 @@ export default class extends React.Component {
                           <Label for="userPassword">Senha</Label>
                           <Input type="password" name="password" id="userPassword" placeholder="" value={this.state.password} onChange={this.handlePasswordChange} />
                           </FormGroup>
-                          <Button outline color="success" type="submit" style={{align: 'right'}}>Login</Button>
+                          <Button outline color="success" type="submit" className='botão'>Login</Button>
                       </Form>
                       </CardBody>
                       <hr/>
@@ -176,6 +176,7 @@ export default class extends React.Component {
                   {alert}
                   
                 </Col>
+                
               </Row>
           
           </Container>

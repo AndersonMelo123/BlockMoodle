@@ -10,6 +10,7 @@ $ionicons-font-path: "/fonts/ionicons" !default;
   margin-bottom: 10px;
   text-align: center;
 }
+
 .footer {
   position: absolute;
   bottom:12px;
@@ -35,4 +36,8 @@ $ionicons-font-path: "/fonts/ionicons" !default;
 .ui.attached.segment {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+
+.botão {
+  float: right;
 }
