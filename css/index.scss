@@ -11,6 +11,17 @@ $ionicons-font-path: "/fonts/ionicons" !default;
   text-align: center;
 }
 
+.contador {
+  position: relative;
+  align-content: center;
+  background: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 150px;
+}
+
 .footer {
   position: absolute;
   bottom:12px;

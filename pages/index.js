@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Grid, Form, Icon, Confirm } from 'semantic-ui-react';
+import { Button, Card, Grid, Form, Icon, Confirm, Statistic } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/layout';
 import Session from '../utils/session';
@@ -228,7 +228,31 @@ export default class CampaignIndex extends Component {
                             </Form> 
                         </Grid.Column>
                     </Grid.Row>
-                </Grid>  
+                </Grid> 
+                <div className='contador'>
+                    <Statistic.Group size='tiny'>
+                    <Statistic>
+                        <Statistic.Value>{this.props.docs.length}</Statistic.Value>
+                        <Statistic.Label>número de <br />relatórios gerados</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value><Icon name='file alternate outline' /> 31,200</Statistic.Value>
+                        <Statistic.Label>relatórios de usuários</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
+                        <Statistic.Label>relatórios de cursos</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
+                        <Statistic.Label>relatórios de notas</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
+                        <Statistic.Label>relatórios de atividades</Statistic.Label>
+                    </Statistic>
+                    </Statistic.Group>
+                </div>
             </Layout>
         );
     }
