@@ -72,7 +72,7 @@ export default class CampaignIndex extends Component {
                     </p>
                     <Item.Group>
                         <Item>
-                        <Item.Image size='tiny' src='/images/wireframe/image.png' />
+                        <Item.Image size='tiny' src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/Anderson.png?raw=true' />
 
                         <Item.Content>
                             <Item.Header as='a'>Anderson Melo</Item.Header>
@@ -85,7 +85,7 @@ export default class CampaignIndex extends Component {
                         </Item>
 
                         <Item>
-                        <Item.Image size='tiny' src='/images/wireframe/image.png' />
+                        <Item.Image size='tiny' src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/Fernando.png?raw=true' />
 
                         <Item.Content>
                             <Item.Header as='a'>Prof. Fernando Aires</Item.Header>
