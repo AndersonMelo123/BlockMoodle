@@ -41,7 +41,7 @@ export default class extends React.Component {
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-            <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon"></link>
+            <link rel="shortcut icon" href="https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true" type="image/x-icon"></link>
             <title>{this.props.title || 'BlockMoodle'}</title>
             <style dangerouslySetInnerHTML={{__html: Styles}}/>
           </Head>

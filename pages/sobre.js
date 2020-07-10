@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Image,  Grid, Menu, Segment, Container, Divider } from 'semantic-ui-react';
+import { Button, Card, Image, Item,  Grid, Menu, Segment, Container, Divider } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/layout';
 import Session from '../utils/session';
@@ -50,9 +50,10 @@ export default class CampaignIndex extends Component {
 
         return (
             <Layout {...this.props}>
-
+                <Image centered="true" src="https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/logo.png?raw=true" size='medium' />
                 <Container textAlign='justified'>
-                    <h4><b>Projeto de pesquisa - Mestrado em Informática Aplicada</b></h4>
+                    <br/>
+                    <h4 style={{textAlign: 'center'}}><b>Projeto de pesquisa - Mestrado em Informática Aplicada</b></h4>
                     <Divider />
                     <p>
                         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
@@ -69,21 +70,34 @@ export default class CampaignIndex extends Component {
                         imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper
                         ultricies nisi.
                     </p>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                        ligula eget dolor. Aenean massa strong. Cum sociis natoque penatibus et
-                        magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,
-                        ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa
-                        quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget,
-                        arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-                        Nullam dictum felis eu pede link mollis pretium. Integer tincidunt. Cras
-                        dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend
-                        tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac,
-                        enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.
-                        Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean
-                        imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper
-                        ultricies nisi.
-                    </p>
+                    <Item.Group>
+                        <Item>
+                        <Item.Image size='tiny' src='/images/wireframe/image.png' />
+
+                        <Item.Content>
+                            <Item.Header as='a'>Anderson Melo</Item.Header>
+                            <Item.Meta>Mestrando em Informática Aplicada</Item.Meta>
+                            <Item.Description>
+                            <Image src='/images/wireframe/short-paragraph.png' />
+                            </Item.Description>
+                            <Item.Extra>Additional Details</Item.Extra>
+                        </Item.Content>
+                        </Item>
+
+                        <Item>
+                        <Item.Image size='tiny' src='/images/wireframe/image.png' />
+
+                        <Item.Content>
+                            <Item.Header as='a'>Prof. Fernando Aires</Item.Header>
+                            <Item.Meta>Orientador</Item.Meta>
+                            <Item.Description>
+                            <Image src='/images/wireframe/short-paragraph.png' />
+                            </Item.Description>
+                            <Item.Extra>Additional Details</Item.Extra>
+                        </Item.Content>
+                        </Item>
+                    </Item.Group>
+                    
                     </Container>
                                      
             </Layout>
