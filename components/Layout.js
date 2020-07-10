@@ -21,7 +21,6 @@ export default class extends React.Component {
 
   static propTypes() {
     return {
-      // session: React.PropTypes.object.isRequired,
       children: React.PropTypes.object.isRequired,
       fluid: React.PropTypes.boolean
     }
@@ -33,9 +32,6 @@ export default class extends React.Component {
     }
   }
 
-
-  //const toggle = () => setIsOpen(!isOpen);
-
   render() {
     if (this.props.session && this.props.session.loggedin) {
       return (
@@ -45,7 +41,7 @@ export default class extends React.Component {
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1"/>
             <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-            <link rel="shortcut icon" href="favicon.png" type="image/x-icon"></link>
+            <link rel="shortcut icon" href="/assets/favicon.png" type="image/x-icon"></link>
             <title>{this.props.title || 'BlockMoodle'}</title>
             <style dangerouslySetInnerHTML={{__html: Styles}}/>
           </Head>
@@ -54,20 +50,35 @@ export default class extends React.Component {
             <Link prefetch href="/">
               <NavbarBrand href="/">
                 <img top width="130px" src="https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/logo.png?raw=true" alt="Girl in a jacket"/>
-                
               </NavbarBrand>
             </Link>
   
             <Nav className="mr-auto" navbar>
               <NavItem>
-                <NavLink href="/sobre">Sobre</NavLink>
-              </NavItem>
-              <NavItem>
                 <NavLink href="https://github.com/AndersonMelo123/BlockMoodle">GitHub</NavLink>
               </NavItem>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
-                  Relatórios
+                  Arquivos
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem>
+                  <NavLink href="/rlt_user">Usuários</NavLink>
+                  </DropdownItem>
+                  <DropdownItem>
+                  <NavLink href="/rlt_cursos">Cursos</NavLink>
+                  </DropdownItem>
+                  <DropdownItem>
+                  <NavLink href="/rlt_notas">Notas</NavLink>
+                  </DropdownItem>
+                  <DropdownItem>
+                  <NavLink href="/rlt_atividades">Atividades</NavLink>
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  Gerar Relatórios
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
@@ -84,6 +95,9 @@ export default class extends React.Component {
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
+              <NavItem>
+                <NavLink href="/sobre">Sobre</NavLink>
+              </NavItem>
             </Nav>
   
             <SignOutButton {...this.props} />

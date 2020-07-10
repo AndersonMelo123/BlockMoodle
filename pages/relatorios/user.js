@@ -29,7 +29,6 @@ export default class RelatorioNew extends Component {
         }
 
         const length = await factory.methods.getLength().call();
-
         props.len = length;
 
         for (let i = 0; i < length; i++) {
@@ -45,7 +44,8 @@ export default class RelatorioNew extends Component {
         this.state = {
             descricao: '',
             errorMessage: '',
-            loading: false,
+            processMessage: '',
+            disabled: false,
             hash: '',
             retorno: '',
             open: false,
@@ -79,8 +79,6 @@ export default class RelatorioNew extends Component {
             a.click();    
             a.remove();  //afterwards we remove the element again         
         });
-
-        window.location.reload(false);
     };
 
     onSubmit = async event => {
@@ -90,19 +88,19 @@ export default class RelatorioNew extends Component {
             this.setState({ open: true })
         } else {
             event.preventDefault();
-            this.setState({ loading: true, errorMessage: '' });
+            this.setState({ disabled: true, errorMessage: '', processMessage: 'Seu relatório está sendo enviado a Blockchain'});
 
             try {
                 const accounts = await web3.eth.getAccounts();
-                await factory.methods.createReport(this.state.descricao, this.state.hash, this.state.tipo).send({
-                from: accounts[0]
-                });
+                await factory.methods.createReport(this.state.descricao, this.state.hash, this.state.tipo).send({ from: accounts[0] });
+                this.getFile();
+                window.location.reload(false);
             } catch (err) {
                 this.setState({ errorMessage: err.message });
+                window.location.reload(false);
             }
         
-            this.setState({ loading: false });
-            this.getFile();
+            this.setState({ disabled: false, processMessage: '' });
         }
     };
 
@@ -119,7 +117,7 @@ export default class RelatorioNew extends Component {
                     <Grid.Row>
                         <Grid.Column>
                             <h5>Gerar Relatório</h5>
-                            <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
+                            <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.processMessage}>
                                 <label>Descrição</label>
                                 <Form.Field>
                                     <div className="ui icon input">
@@ -127,15 +125,24 @@ export default class RelatorioNew extends Component {
                                             icon='edit outline'
                                             placeholder="Descrição..."
                                             value={this.state.descricao}
-                                            onChange={event =>
-                                                this.setState({ descricao: event.target.value })}
+                                            disabled={this.state.disabled}
+                                            onChange={event => this.setState({ descricao: event.target.value })}
                                         />    
                                     </div>
                                 </Form.Field>
-                                <Message error header="Oops!" content={this.state.errorMessage} />
-                                <Button loading={this.state.loading} primary>
-                                    <Icon name='file code outline' />Gerar
+                                
+                                <Button disabled={this.state.disabled} primary>
+                                    <Icon name='file alternate outline' />Gerar
                                 </Button>
+
+                                <Message error header="Oops!" content={this.state.errorMessage} />
+                                <Message icon success>
+                                    <Icon name='cog' loading />
+                                    <Message.Content>
+                                    <Message.Header>Aguarde</Message.Header>
+                                        {this.state.processMessage}
+                                    </Message.Content>
+                                </Message>
                                 <Confirm
                                     open={this.state.open}
                                     header='Atenção'

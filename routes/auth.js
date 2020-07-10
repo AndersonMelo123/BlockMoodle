@@ -14,10 +14,8 @@ module.exports = (server) => {
   }
 
   async function getUser() {
-    
     try {
       const results = await pool.query(`SELECT a.firstname, a.lastname, a.email, a.timecreated FROM mdl_user as a`)
-      
       return results[0];
     } catch (error) {
       console.error(error);
@@ -25,11 +23,8 @@ module.exports = (server) => {
   }
 
   async function getCurso() {
-    
     try {
       const results = await pool.query(`SELECT c.id,c.shortname,c.fullname,c.startdate,c.enddate,ct.name AS category FROM mdl_course c INNER JOIN mdl_course_categories ct ON c.category=ct.id WHERE c.format != 'site'`)
-      
-      console.log('RESULTS', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -37,11 +32,8 @@ module.exports = (server) => {
   }
 
   async function getNotas() {
-    
     try {
       const results = await pool.query(`SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2`)
-      
-      console.log('RESULTS', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -49,15 +41,12 @@ module.exports = (server) => {
   }
 
   server.get('/auth/profile', async (req, resp) => {
-    
     const results = await getUser();
-
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
     var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
     ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_users.ejs", {data: data, hora: hora, alunos: results}, (err, html) => {
@@ -82,15 +71,12 @@ module.exports = (server) => {
   })
 
   server.get('/auth/profile_cursos', async (req, resp) => {
-    
     const results = await getCurso();
-
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
     var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
     ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_cursos.ejs", {data: data, hora: hora, cursos: results}, (err, html) => {
@@ -115,15 +101,12 @@ module.exports = (server) => {
   })
 
   server.get('/auth/profile_notas', async (req, resp) => {
-    
     const results = await getNotas();
-
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
     var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
     ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_notas.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
@@ -147,15 +130,12 @@ module.exports = (server) => {
     });
   })
   //*********************************************************************************************/
-
-
   server.post('/auth/login', async (req, res) => {
     const email = req.body.email
     const password = req.body.password
     if (email && password) {
       const results = await getUsuario(email)
       if (results[0][0]) {
-        //if (results[0][0].verified) {
           bcrypt.compare(password, results[0][0].password).then(function(response) {
             if (response == true) {
               req.session.loggedin = true
@@ -165,9 +145,6 @@ module.exports = (server) => {
               return res.json({message: 'Senha incorreta!'})
             }
           })
-        //} else {
-        //  return res.json({message: 'User not verified'})
-        //}
       } else {
         return res.json({message: 'Usuário não encontrado!'})
       }
@@ -184,9 +161,7 @@ module.exports = (server) => {
       console.error(e)
     }
   }
-
 //============================================================================================================
-
   server.post('/auth/signup', async (req, res) => {
     var name = req.body.name
     var address = req.body.address
@@ -218,12 +193,9 @@ module.exports = (server) => {
       console.error(e)
     }
   }
-
 //==========================================================================================================
-
   server.get('/auth/signout', (req, res) => {
     if (req.session && req.session.loggedin) {
-      console.log('destruiu session');
       req.session.destroy()
       res.redirect(`/`)
     }
@@ -231,7 +203,6 @@ module.exports = (server) => {
 
   server.get('/auth/session', (req, res) => {
     if (req.session) {
-      console.log('criou session');
       return res.json(req.session)
     } else {
       return res.status(403)
@@ -263,7 +234,6 @@ module.exports = (server) => {
     try {
       fs.readdir(uploadFolder, (err, files) => {
       for (let i = 0; i < files.length; i++) {
-        console.log(files[i]);
         if (files[i] == 'arquivo.pdf'){
           relatorio.push(files[i]);
         }	
@@ -280,7 +250,6 @@ module.exports = (server) => {
     try {
       fs.readdir(uploadFolder, (err, files) => {
       for (let i = 0; i < files.length; i++) {
-        console.log(files[i]);
         if (files[i] == 'arquivo_curso.pdf'){
           relatorio.push(files[i]);
         }	
@@ -297,7 +266,6 @@ module.exports = (server) => {
     try {
       fs.readdir(uploadFolder, (err, files) => {
       for (let i = 0; i < files.length; i++) {
-        console.log(files[i]);
         if (files[i] == 'arquivo_notas.pdf'){
           relatorio.push(files[i]);
         }	
@@ -318,10 +286,7 @@ module.exports = (server) => {
             });
         } else {
             let myFile = req.files.myFile;
-
             myFile.mv('./uploads/' + myFile.name);
-
-            //send response
             res.send({
                 status: true,
                 message: 'File is uploaded',
@@ -338,23 +303,14 @@ module.exports = (server) => {
   });
 
   server.post('/api/files/validar', async (req, res)=>{
-
     const a = req.body;
-
-    console.log('req a ======= ', a.nameFile);
-    
     const hash = []
-
     fs.readFile('./uploads/' + a.nameFile, 'utf-8', function (err, dataresult) {
       if(err){
         console.log('err3',err);
-      }
-      console.log(sha256(dataresult));
-      
+      }  
       hash.push(sha256(dataresult));
 
-      console.log(hash[0]);
-      
       res.send({
         status: true,
         message: 'File is valid',
@@ -364,5 +320,4 @@ module.exports = (server) => {
       });
     });
   })
-
 }
