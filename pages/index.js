@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Grid, Form, Icon, Confirm, Statistic } from 'semantic-ui-react';
+import { Button, Card, Grid, Form, Icon, Confirm, Statistic, Image } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/layout';
 import Session from '../utils/session';
@@ -193,6 +193,24 @@ export default class CampaignIndex extends Component {
         }
     }
 
+    contador(){
+        var user=0, cursos=0, notas=0, atividades=0;
+        for (let i = 0; i < this.props.docs.length; i++) {
+            if (this.props.docs[i].tipo == 0){
+                user+=1;
+            } else if (this.props.docs[i].tipo == 1){
+                cursos+=1;
+            } else if (this.props.docs[i].tipo == 2){
+                notas+=1;
+            } else if (this.props.docs[i].tipo == 3){
+                atividades+=1;
+            }
+        }
+        var c = JSON.stringify({'user': user, 'curso': cursos, 'notas': notas, 'atividades': atividades});
+        var obj = JSON.parse(c);
+        return obj;
+    }
+
     render() {
         return (
             <Layout {...this.props}>
@@ -230,26 +248,26 @@ export default class CampaignIndex extends Component {
                     </Grid.Row>
                 </Grid> 
                 <div className='contador'>
-                    <Statistic.Group size='tiny'>
-                    <Statistic>
-                        <Statistic.Value>{this.props.docs.length}</Statistic.Value>
-                        <Statistic.Label>número de <br />relatórios gerados</Statistic.Label>
+                    <Statistic.Group size='mini'>
+                    <Statistic >
+                        <Statistic.Value><Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true' inline circular /> {this.props.docs.length}</Statistic.Value>
+                        <Statistic.Label>nº de relatórios <br /> gerados</Statistic.Label>
                     </Statistic>
                     <Statistic>
-                        <Statistic.Value><Icon name='file alternate outline' /> 31,200</Statistic.Value>
-                        <Statistic.Label>relatórios de usuários</Statistic.Label>
+                        <Statistic.Value>{this.contador().user}</Statistic.Value>
+                        <Statistic.Label>relatórios <br /> de usuários</Statistic.Label>
                     </Statistic>
                     <Statistic>
-                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
-                        <Statistic.Label>relatórios de cursos</Statistic.Label>
+                        <Statistic.Value>{this.contador().curso}</Statistic.Value>
+                        <Statistic.Label>relatórios <br /> de cursos</Statistic.Label>
                     </Statistic>
                     <Statistic>
-                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
-                        <Statistic.Label>relatórios de notas</Statistic.Label>
+                        <Statistic.Value>{this.contador().notas}</Statistic.Value>
+                        <Statistic.Label>relatórios <br /> de notas</Statistic.Label>
                     </Statistic>
                     <Statistic>
-                        <Statistic.Value><Icon name='file alternate outline' /> 22</Statistic.Value>
-                        <Statistic.Label>relatórios de atividades</Statistic.Label>
+                        <Statistic.Value>{this.contador().atividades}</Statistic.Value>
+                        <Statistic.Label>relatórios <br /> de atividades</Statistic.Label>
                     </Statistic>
                     </Statistic.Group>
                 </div>

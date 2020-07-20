@@ -33,7 +33,20 @@ module.exports = (server) => {
 
   async function getNotas() {
     try {
-      const results = await pool.query(`SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2`)
+      
+      //SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2
+      const results = await pool.query(`SELECT g.id,g.itemid,g.userid,g.finalgrade FROM mdl_grade_grades g INNER JOIN mdl_grade_items i ON g.itemid=i.id WHERE i.courseid=2`)
+      console.log('RESSS', results);
+      return results[0];
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getAtividades() {
+    try {
+      const results = await pool.query(`SELECT cm.id,cm.instance,cm.section,cm.module,m.name AS modulename FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module  WHERE cm.course=2`)
+      console.log('RESSIL', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -118,6 +131,36 @@ module.exports = (server) => {
             console.log('err2',err);
           }else{
             fs.readFile('./arquivo_notas.pdf', 'utf-8', function (err, dataresult) {
+              if(err){
+                console.log('err3',err);
+              }
+              const a = sha256(dataresult);
+              return resp.json({chave: a});
+            });
+          }
+        });
+      }
+    });
+  })
+
+  server.get('/auth/profile_atividades', async (req, resp) => {
+    const results = await getAtividades();
+    var timestamp = new Date().getTime();
+    var d = new Date(timestamp);
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
+    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
+    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+
+    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_atividades.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
+      if(err){
+        console.log('err1',err);
+      } else {
+        pdf.create(html, options).toFile("./arquivo_atividades.pdf", (err, res) => {
+          if(err) {
+            console.log('err2',err);
+          }else{
+            fs.readFile('./arquivo_atividades.pdf', 'utf-8', function (err, dataresult) {
               if(err){
                 console.log('err3',err);
               }
@@ -267,6 +310,22 @@ module.exports = (server) => {
       fs.readdir(uploadFolder, (err, files) => {
       for (let i = 0; i < files.length; i++) {
         if (files[i] == 'arquivo_notas.pdf'){
+          relatorio.push(files[i]);
+        }	
+      }
+      res.download(relatorio[0]);
+    })	
+    } catch (error) {
+      res.status(500).send(err);
+    }
+  });
+
+  server.get('/api/files/getall_atividades', async (req, res) => {
+    var relatorio = [];
+    try {
+      fs.readdir(uploadFolder, (err, files) => {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i] == 'arquivo_atividades.pdf'){
           relatorio.push(files[i]);
         }	
       }
