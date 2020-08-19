@@ -15,6 +15,12 @@
           width: 100%;
         }
 
+        .ribbon {
+          position:static;
+          float:right;
+          bottom:60px;
+        }
+
         h4 {
             text-align: center;
             color: #3d3d5c;
@@ -24,6 +30,10 @@
           border: 1px solid #dddddd;
           text-align: left;
           padding: 8px;
+        }
+
+        th {
+          text-align: center;
         }
         
         tr:nth-child(even) {
@@ -53,27 +63,29 @@
     <table>
         <tr>
           <th>Nome</th>
-          <th>Sobrenome</th>
           <th>Email</th>
+          <th>Telefone</th>
           <th>Data de cadastro</th>
         </tr>
 
-        <% for(var i=0; i<alunos.length; i++){ %>
-			<tr>
-                <td><%=alunos[i].firstname%></td>
-                <td><%=alunos[i].lastname%></td>
-                <td><%=alunos[i].email%></td>
-                <td><%
-                    var d = new Date(alunos[i].timecreated * 1000);
-                    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-                    var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();%>
-
-                    <%= date %>
-                </td>
-			</tr>
-		<% } %>
+        <% for(var i=1; i<alunos.length; i++){ %>
+          <tr>
+            <td><%= alunos[i].firstname%> <%=alunos[i].lastname %></td>
+            <td><%= alunos[i].email %></td>
+            <td><%= alunos[i].phone2 %></td>
+  
+            <td><%
+              var d = new Date(alunos[i].timecreated * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();%>
+              <%= date %>
+            </td>
+          </tr>
+		    <% } %>
     </table>
 
     <h4 style="color: black;">RECIFE, <%= data %></h4>
+
+    <img src='http://localhost:3000/static/images/qr.png' height="200" width="200" class="ribbon"/>
 </body>
 </html>

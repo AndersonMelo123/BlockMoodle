@@ -15,7 +15,8 @@ module.exports = (server) => {
 
   async function getUser() {
     try {
-      const results = await pool.query(`SELECT a.firstname, a.lastname, a.email, a.timecreated FROM mdl_user as a`)
+      const results = await pool.query(`SELECT a.firstname, a.lastname, a.email, a.phone2, a.institution, a.timecreated FROM mdl_user as a`)
+      console.log('rererere', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -35,9 +36,14 @@ module.exports = (server) => {
     try {
       
       //SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2
-      const results = await pool.query(`SELECT g.id,g.itemid,g.userid,g.finalgrade FROM mdl_grade_grades g INNER JOIN mdl_grade_items i ON g.itemid=i.id WHERE i.courseid=2`)
-      console.log('RESSS', results);
-      return results[0];
+      const results = await pool.query(`SELECT u.id, u.firstname, u.lastname FROM mdl_role_assignments rs INNER JOIN mdl_user u ON u.id=rs.userid INNER JOIN mdl_context e ON rs.contextid=e.id WHERE e.contextlevel=50 AND rs.roleid=5 AND e.instanceid=5`);
+      const ativ = await pool.query('SELECT id, itemname, itemtype, gradetype, scaleid FROM mdl_grade_items WHERE courseid=5');
+      const nota = await pool.query('SELECT g.id, g.itemid, g.userid, g.finalgrade FROM mdl_grade_grades g INNER JOIN mdl_grade_items i ON g.itemid=i.id WHERE i.courseid=5');
+    
+      results.push(ativ[0]);
+      results.push(nota[0]);
+      
+      return results;
     } catch (error) {
       console.error(error);
     }
@@ -45,9 +51,24 @@ module.exports = (server) => {
 
   async function getAtividades() {
     try {
-      const results = await pool.query(`SELECT cm.id,cm.instance,cm.section,cm.module,m.name AS modulename FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module  WHERE cm.course=2`)
-      console.log('RESSIL', results);
-      return results[0];
+      const results = await pool.query(`SELECT q.id,q.name, q.timemodified,c.shortname FROM mdl_quiz q INNER JOIN mdl_course c ON q.course=c.id `)
+      const forum = await pool.query(`SELECT f.id,f.name, f.timemodified,c.shortname FROM mdl_forum f INNER JOIN mdl_course c ON f.course=c.id `)
+      const resource = await pool.query(`SELECT r.id,r.name, r.timemodified,c.shortname FROM mdl_resource r INNER JOIN mdl_course c ON r.course=c.id `)
+      const choice = await pool.query(`SELECT h.id,h.name, h.timemodified,c.shortname FROM mdl_choice h INNER JOIN mdl_course c ON h.course=c.id `)
+      const url = await pool.query(`SELECT u.id,u.name, u.timemodified,c.shortname FROM mdl_url u INNER JOIN mdl_course c ON u.course=c.id `)
+      const glossary = await pool.query(`SELECT g.id,g.name, g.timemodified,c.shortname FROM mdl_glossary g INNER JOIN mdl_course c ON g.course=c.id `)
+      const feedback = await pool.query(`SELECT b.id,b.name, b.timemodified,c.shortname FROM mdl_feedback b INNER JOIN mdl_course c ON b.course=c.id `)
+
+      results.push(forum[0]);
+      results.push(resource[0]);
+      results.push(choice[0]);
+      results.push(url[0]);
+      results.push(glossary[0]);
+      results.push(feedback[0]);
+      
+
+      //console.log('RESSSS', results);
+      return results;
     } catch (error) {
       console.error(error);
     }
@@ -62,7 +83,7 @@ module.exports = (server) => {
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
-    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_users.ejs", {data: data, hora: hora, alunos: results}, (err, html) => {
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_users.ejs", {data: data, hora: hora, alunos: results}, (err, html) => {
       if(err){
         console.log('err1',err);
       } else {
@@ -92,7 +113,7 @@ module.exports = (server) => {
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
-    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_cursos.ejs", {data: data, hora: hora, cursos: results}, (err, html) => {
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_cursos.ejs", {data: data, hora: hora, cursos: results}, (err, html) => {
       if(err){
         console.log('err1',err);
       } else {
@@ -115,6 +136,7 @@ module.exports = (server) => {
 
   server.get('/auth/profile_notas', async (req, resp) => {
     const results = await getNotas();
+    //console.log('RESSS ===>', results);
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
     var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -122,7 +144,7 @@ module.exports = (server) => {
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
-    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_notas.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas.ejs", {data: data, hora: hora, result: results}, (err, html) => {
       if(err){
         console.log('err1',err);
       } else {
@@ -152,7 +174,7 @@ module.exports = (server) => {
     var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
     var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
 
-    ejs.renderFile("C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/modelos/rlt_atividades.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_atividades.ejs", {data: data, hora: hora, atividades: results}, (err, html) => {
       if(err){
         console.log('err1',err);
       } else {
@@ -270,7 +292,7 @@ module.exports = (server) => {
 
   //=========================================================================
   const fileWorker = require('../controllers/file.controller');
-  const uploadFolder = 'C:/Users/Anderson Melo/Documents/GIT/BlockMoodle/';
+  const uploadFolder = 'B:/Documentos/GIT/BlockMoodle/';
 	
   server.get('/api/files/getall', async (req, res) => {
     var relatorio = [];

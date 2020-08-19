@@ -251,23 +251,23 @@ export default class CampaignIndex extends Component {
                     <Statistic.Group size='mini'>
                     <Statistic >
                         <Statistic.Value><Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true' inline circular /> {this.props.docs.length}</Statistic.Value>
-                        <Statistic.Label>nº de relatórios <br /> gerados</Statistic.Label>
+                        <Statistic.Label>nº total de <br/> relatórios</Statistic.Label>
                     </Statistic>
                     <Statistic>
                         <Statistic.Value>{this.contador().user}</Statistic.Value>
-                        <Statistic.Label>relatórios <br /> de usuários</Statistic.Label>
+                        <Statistic.Label>relat. de <br/> usuários</Statistic.Label>
                     </Statistic>
                     <Statistic>
                         <Statistic.Value>{this.contador().curso}</Statistic.Value>
-                        <Statistic.Label>relatórios <br /> de cursos</Statistic.Label>
+                        <Statistic.Label>relat. de <br/> cursos</Statistic.Label>
                     </Statistic>
                     <Statistic>
                         <Statistic.Value>{this.contador().notas}</Statistic.Value>
-                        <Statistic.Label>relatórios <br /> de notas</Statistic.Label>
+                        <Statistic.Label>relat. de <br/> notas</Statistic.Label>
                     </Statistic>
                     <Statistic>
                         <Statistic.Value>{this.contador().atividades}</Statistic.Value>
-                        <Statistic.Label>relatórios <br /> de atividades</Statistic.Label>
+                        <Statistic.Label>relat. de <br/> atividades</Statistic.Label>
                     </Statistic>
                     </Statistic.Group>
                 </div>

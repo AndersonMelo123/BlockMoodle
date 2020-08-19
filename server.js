@@ -37,9 +37,11 @@ app.prepare().then(() => {
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(bodyParser.json());
 
-  server.use('/fonts/ionicons', express.static('./node_modules/ionicons/dist/fonts'))
+  server.use('/static', express.static('public'));
 
-  routes.auth(server)
+  server.use('/fonts/ionicons', express.static('./node_modules/ionicons/dist/fonts'));
+
+  routes.auth(server);
 
   server.get('*', (req, res) => {
     return handle(req, res)

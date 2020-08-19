@@ -15,6 +15,12 @@
           width: 100%;
         }
 
+        .ribbon {
+          position:static;
+          float:right;
+          bottom:60px;
+        }
+
         h4 {
             text-align: center;
             color: #3d3d5c;
@@ -24,6 +30,7 @@
           border: 1px solid #dddddd;
           text-align: left;
           padding: 8px;
+          text-align: center;
         }
         
         tr:nth-child(even) {
@@ -54,19 +61,34 @@
         <tr>
           <th>ID</th>
           <th>Nome</th>
-          <th>Sobrenome</th>
-          <th>Email</th>
-          <th>Nota</th>
+          <th>Questionário</th>
+          <th>Glossário</th>
+          <th>Avaliação</th>
+          <th>Média</th>
         
         </tr>
 
-        <% for(var i=0; i<notas.length; i++){ %>
+        <% var jsonArray = JSON.parse(JSON.stringify(result[0])) %>
+        <% var notasArray = JSON.parse(JSON.stringify(result[3])) %>
+
+        <% console.log('RESDSDSDSD---------------------------------', notasArray.length) %>
+        <% console.log('RESDSDSDSD---------------------------------', notasArray[1].finalgrade) %>
+
+        <% for(var i=0; i<jsonArray.length; i++){ %>
 			  <tr>      
-          <td><%=notas[i].id%></td>
-          <td><%=notas[i].firstname%></td>
-          <td><%=notas[i].lastname%></td>
-          <td><%=notas[i].email%></td>
-          <td><%=notas[i].nota%></td>
+          <td><%=jsonArray[i].id%></td>
+          <td><%=jsonArray[i].firstname%> <%=jsonArray[i].lastname%></td>
+
+          <% for(var j=0; j<notasArray.length; j++){ %>
+            <% if(notasArray[j].userid == jsonArray[i].id && notasArray[j].itemid != 2) { %>
+              <td><%= parseFloat(notasArray[j].finalgrade).toFixed(1) %></td>
+            <% } %>
+          <% } %>
+          <% for(var j=0; j<notasArray.length; j++){ %>
+            <% if(jsonArray[i].id == notasArray[j].userid && notasArray[j].itemid == 2) { %>
+              <td><%= parseFloat(notasArray[j].finalgrade).toFixed(1) %></td>
+            <% } %>
+          <% } %>
           
 
 			  </tr>
@@ -74,5 +96,7 @@
     </table>
 
     <h4 style="color: black;">RECIFE, <%= data %></h4>
+
+    <img src='http://localhost:3000/static/images/qr.png' height="200" width="200" class="ribbon"/>
 </body>
 </html>

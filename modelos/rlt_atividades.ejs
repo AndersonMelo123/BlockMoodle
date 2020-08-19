@@ -15,6 +15,12 @@
           width: 100%;
         }
 
+        .ribbon {
+          position:static;
+          float:right;
+          bottom:60px;
+        }
+
         h4 {
             text-align: center;
             color: #3d3d5c;
@@ -24,6 +30,7 @@
           border: 1px solid #dddddd;
           text-align: left;
           padding: 8px;
+          text-align: center;
         }
         
         tr:nth-child(even) {
@@ -53,26 +60,125 @@
     <table>
         <tr>
           <th>ID</th>
-          <th>Nome</th>
-          <th>Sobrenome</th>
-          <th>Email</th>
-          <th>Nota</th>
+          <th>Atividade</th>
+          <th>Último Acesso</th>
+          <th>Curso vinculado</th>
         
         </tr>
 
-        <% for(var i=0; i<notas.length; i++){ %>
-			  <tr>      
-          <td><%=notas[i].id%></td>
-          <td><%=notas[i].firstname%></td>
-          <td><%=notas[i].lastname%></td>
-          <td><%=notas[i].email%></td>
-          <td><%=notas[i].nota%></td>
-          
+        <% var quiz = JSON.parse(JSON.stringify(atividades[0])) %>
+        <% var forum = JSON.parse(JSON.stringify(atividades[2])) %>
+        <% var resource = JSON.parse(JSON.stringify(atividades[3])) %>
+        <% var choice = JSON.parse(JSON.stringify(atividades[4])) %>
+        <% var url = JSON.parse(JSON.stringify(atividades[5])) %>
+        <% var glossary = JSON.parse(JSON.stringify(atividades[6])) %>
+        <% var feedback = JSON.parse(JSON.stringify(atividades[7])) %>
+        
 
-			  </tr>
+        <% console.log('RESDSDSDSD---------------------------------', quiz.length) %>
+  
+        <% for(var i=0; i<quiz.length; i++){ %>
+          <tr>      
+            <td><%=quiz[i].id%></td>
+            <td><%=quiz[i].name%></td>
+            <td><%
+              var d = new Date(quiz[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=quiz[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<forum.length; i++){ %>
+          <tr>      
+            <td><%=forum[i].id%></td>
+            <td><%=forum[i].name%></td>
+            <td><%
+              var d = new Date(forum[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=forum[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<resource.length; i++){ %>
+          <tr>      
+            <td><%=resource[i].id%></td>
+            <td><%=resource[i].name%></td>
+            <td><%
+              var d = new Date(resource[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=resource[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<choice.length; i++){ %>
+          <tr>      
+            <td><%=choice[i].id%></td>
+            <td><%=choice[i].name%></td>
+            <td><%
+              var d = new Date(choice[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=choice[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<url.length; i++){ %>
+          <tr>      
+            <td><%=url[i].id%></td>
+            <td><%=url[i].name%></td>
+            <td><%
+              var d = new Date(url[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=url[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<glossary.length; i++){ %>
+          <tr>      
+            <td><%=glossary[i].id%></td>
+            <td><%=glossary[i].name%></td>
+            <td><%
+              var d = new Date(glossary[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=glossary[i].shortname%></td>
+          </tr>
+        <% } %>
+        <% for(var i=0; i<feedback.length; i++){ %>
+          <tr>      
+            <td><%=feedback[i].id%></td>
+            <td><%=feedback[i].name%></td>
+            <td><%
+              var d = new Date(feedback[i].timemodified * 1000);
+              var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();
+              var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();%>
+              <%= date %> às <%= hora %>
+            </td>
+            <td><%=feedback[i].shortname%></td>
+          </tr>
 		    <% } %>
     </table>
 
     <h4 style="color: black;">RECIFE, <%= data %></h4>
+
+    <img src='http://localhost:3000/static/images/qr.png' height="200" width="200" class="ribbon"/>
 </body>
 </html>
