@@ -21,7 +21,7 @@ export default class extends React.Component {
       props.session = await Session.getSession()
     }
 
-    if (props.session && props.session.loggedin) {
+    if (props.session && props.session.loggedin && props.session.tipo == "Admin") {
       if (req) {
         res.redirect('/')
       } else {
@@ -85,9 +85,11 @@ export default class extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      console.log('response', response);
-      if (response.loggedin) {
+      console.log('response!!', response);
+      if (response.loggedin && response.tipo == "Admin") {
         Router.push(`/`)
+      } else if (response.loggedin && response.tipo == "User"){
+        Router.push(`/aluno/validar`)
       } else if (response.message) {
         this.setState({
           message: response.message
@@ -132,15 +134,6 @@ export default class extends React.Component {
     
     const alert = (this.state.message === null) ? <div/> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
 
-    if (this.props.session.loggedin) {
-      return (
-        <Layout {...this.props}>
-          <p className="lead text-center mt-5 mb-5">
-            <Link href="/"><a>Manage your profile</a></Link>
-          </p>
-        </Layout>
-      )
-    } else {
       return (
         <Layout {...this.props}>
           <Container>
@@ -176,7 +169,6 @@ export default class extends React.Component {
                   {alert}
                   
                 </Col>
-                
               </Row>
           
           </Container>
@@ -191,6 +183,5 @@ export default class extends React.Component {
           </Container>
         </Layout>
       )
-    }
   }
 }

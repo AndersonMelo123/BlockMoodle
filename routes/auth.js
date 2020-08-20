@@ -203,9 +203,20 @@ module.exports = (server) => {
       if (results[0][0]) {
           bcrypt.compare(password, results[0][0].password).then(function(response) {
             if (response == true) {
-              req.session.loggedin = true
-              req.session.email = email
-              return res.json(req.session)
+              if(results[0][0].tipo == 0){
+                req.session.loggedin = true
+                req.session.email = email
+                req.session.nome = results[0][0].name
+                req.session.tipo = "Admin"
+                return res.json(req.session)
+              } else if (results[0][0].tipo == 1){
+                req.session.loggedin = true
+                req.session.email = email
+                req.session.nome = results[0][0].name
+                req.session.tipo = "User"
+                return res.json(req.session)
+              }
+              
             } else {
               return res.json({message: 'Senha incorreta!'})
             }

@@ -20,7 +20,8 @@ export default class RelatorioNew extends Component {
         } else {
             props.session = await Session.getSession()
         }
-        if (!props.session || !props.session.loggedin) {
+        console.log('DDDDDDD',props.session);
+        if (!props.session || !props.session.loggedin || props.session.tipo == "User") {
             if (req) {
                 res.redirect('/login')
             } else {

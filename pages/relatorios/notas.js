@@ -20,7 +20,7 @@ export default class NotasNew extends Component {
         } else {
             props.session = await Session.getSession()
         }
-        if (!props.session || !props.session.loggedin) {
+        if (!props.session || !props.session.loggedin || props.session.tipo == "User") {
             if (req) {
                 res.redirect('/login')
             } else {

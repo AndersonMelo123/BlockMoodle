@@ -7,7 +7,7 @@ import Session from '../utils/session'
 
 export default class extends React.Component {
   
-  static async getInitialProps({req, res}) {
+  /*static async getInitialProps({req, res}) {
 
     let props = {
       session: ''
@@ -28,7 +28,7 @@ export default class extends React.Component {
     }
     
     return props
-  }
+  }*/
 
   constructor(props) {
     super(props)
@@ -141,15 +141,6 @@ export default class extends React.Component {
     
     const alert = (this.state.message === null) ? <div/> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
 
-    if (this.props.session.loggedin) {
-      return (
-        <Layout {...this.props}>
-          <p className="lead text-center mt-5 mb-5">
-            <Link href="/"><a>Manage your profile</a></Link>
-          </p>
-        </Layout>
-      )
-    } else {
       return (
         <Layout {...this.props}>
           <Container>
@@ -195,6 +186,5 @@ export default class extends React.Component {
           </Container>
         </Layout>
       )
-    }
   }
 }

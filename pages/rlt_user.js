@@ -20,7 +20,7 @@ export default class RltUsers extends Component {
             props.session = await Session.getSession()
         }
       
-        if (!props.session || !props.session.loggedin) {
+        if (!props.session || !props.session.loggedin || props.session.tipo == "User") {
             if (req) {
                 res.redirect('/login')
             } else {

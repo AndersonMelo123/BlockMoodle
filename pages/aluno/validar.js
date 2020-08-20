@@ -1,44 +1,41 @@
 import React, { Component } from 'react';
-import { Button, Card, Grid, Form, Icon, Confirm, Statistic, Image } from 'semantic-ui-react';
-import factory from '../ethereum/factory';
-import Layout from '../components/layout';
-import Session from '../utils/session';
+import { Button, Card, Grid, Form, Icon, Confirm, Statistic, Segment, Image } from 'semantic-ui-react';
+import factory from '../../ethereum/factory';
+import Layout from '../../components/layout';
+import Session from '../../utils/session';
+import Router from 'next/router';
 
 export default class CampaignIndex extends Component {
 
     static async getInitialProps({req, res}) {
-
         let props = {
             session: '',
             docs: [],
             len: 0,
         }
-          
         if (req && req.session) {
             props.session = req.session
         } else {
             props.session = await Session.getSession()
         }
-      
-        if (!props.session || !props.session.loggedin || props.session.tipo == "User") {
+        console.log('DDDDDDD',props.session);
+        if (!props.session || !props.session.loggedin) {
             if (req) {
                 res.redirect('/login')
             } else {
-              Router.push('/login')
+                Router.push('/login')
             }
         }
 
         const length = await factory.methods.getLength().call();
-        
         props.len = length;
 
         for (let i = 0; i < length; i++) {
-            
             const file = await factory.methods.docs(i).call();
-                
             props.docs.push(file);
         }
-        return props;
+
+        return props
     }
 
     constructor(props) {
@@ -66,35 +63,6 @@ export default class CampaignIndex extends Component {
           [event.target.name]: event.target.value
         })
       }
-
-    cardGrupo() {
-        const items = [
-            {
-                header: 'Relatórios de Usuários',
-                description: 'Gerar relatórios de todos os usuários cadastrados no Moodle',
-                meta: '_______________',
-                href: '/rlt_user'
-            },
-            {
-                header: 'Relatórios de Cursos',
-                description: 'Gerar relatórios de todos os cursos cadastrados no Moodle',
-                meta: '_______________',
-                href: '/rlt_cursos'
-            },
-            {
-                header: 'Relatórios de Notas',
-                description: 'Gerar relatórios das notas dos alunos cadastrados no Moodle',
-                meta: '_______________',
-                href: '/rlt_notas'
-            },
-            {
-                header: 'Relatórios de Atividades',
-                description: 'Crie relatórios de todos os cursos cadastrados no Moodle',
-                meta: '_______________',
-                href: '/rlt_atividades'
-            },]
-        return <Card.Group items={items} />
-    }
 
     fileSelectedHandler = event => {
         this.state.selectedFile.push(event.target.files[0]);
@@ -193,24 +161,6 @@ export default class CampaignIndex extends Component {
         }
     }
 
-    contador(){
-        var user=0, cursos=0, notas=0, atividades=0;
-        for (let i = 0; i < this.props.docs.length; i++) {
-            if (this.props.docs[i].tipo == 0){
-                user+=1;
-            } else if (this.props.docs[i].tipo == 1){
-                cursos+=1;
-            } else if (this.props.docs[i].tipo == 2){
-                notas+=1;
-            } else if (this.props.docs[i].tipo == 3){
-                atividades+=1;
-            }
-        }
-        var c = JSON.stringify({'user': user, 'curso': cursos, 'notas': notas, 'atividades': atividades});
-        var obj = JSON.parse(c);
-        return obj;
-    }
-
     render() {
         return (
             <Layout {...this.props}>
@@ -219,7 +169,15 @@ export default class CampaignIndex extends Component {
                 <Grid columns={2} divided>
                     <Grid.Row>
                         <Grid.Column width={9}>
-                            {this.cardGrupo()}
+                        <h4>Olá {this.props.session.nome}</h4>
+                        <Segment raised>
+                            <Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true' size='tiny' floated='left' />
+                            <b>Dica: </b>
+                            Informe uma descrição que seja a útil para identificar o seu relatório posteriormente.
+                            Ao clicar em "Gerar" o sistema irá criar um arquico PDF com o relatório solicitado, mas para isso será necessário
+                            a realização do pagento de uma taxa em Ether para que seja possível a inserção do relatório na Blockchain. 
+                            ealização do pagento de uma taxa em Ether para que seja possível a inserção do relatório na Blockchain.
+                        </Segment>
                         </Grid.Column>
                         <Grid.Column width={7}>
                             <h5><b>Validar Relatório</b></h5>
@@ -247,30 +205,6 @@ export default class CampaignIndex extends Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid> 
-                <div className='contador'>
-                    <Statistic.Group size='mini'>
-                    <Statistic >
-                        <Statistic.Value><Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true' inline circular /> {this.props.docs.length}</Statistic.Value>
-                        <Statistic.Label>nº total de <br/> relatórios</Statistic.Label>
-                    </Statistic>
-                    <Statistic>
-                        <Statistic.Value>{this.contador().user}</Statistic.Value>
-                        <Statistic.Label>relat. de <br/> usuários</Statistic.Label>
-                    </Statistic>
-                    <Statistic>
-                        <Statistic.Value>{this.contador().curso}</Statistic.Value>
-                        <Statistic.Label>relat. de <br/> cursos</Statistic.Label>
-                    </Statistic>
-                    <Statistic>
-                        <Statistic.Value>{this.contador().notas}</Statistic.Value>
-                        <Statistic.Label>relat. de <br/> notas</Statistic.Label>
-                    </Statistic>
-                    <Statistic>
-                        <Statistic.Value>{this.contador().atividades}</Statistic.Value>
-                        <Statistic.Label>relat. de <br/> atividades</Statistic.Label>
-                    </Statistic>
-                    </Statistic.Group>
-                </div>
             </Layout>
         );
     }
