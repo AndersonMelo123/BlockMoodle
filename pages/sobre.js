@@ -55,7 +55,7 @@ export default class CampaignIndex extends Component {
                 <Image centered="true" src="https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/logo.png?raw=true" size='medium' />
                 <Container textAlign='justified'>
                     <br/>
-                    <h4 style={{textAlign: 'center'}}><b>Projeto de pesquisa - Mestrado em Informática Aplicada</b></h4>
+                    <h4 style={{textAlign: 'center', color: '#f88114'}}><b>Projeto de pesquisa - Mestrado em Informática Aplicada</b></h4>
                     <Divider />
                     <p>
                         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
@@ -89,7 +89,7 @@ export default class CampaignIndex extends Component {
                     </p>
 
                     <Divider />
-                    <h4 style={{textAlign: 'center'}}><b>Dados dos Pesquisadores</b></h4>
+                    <h4 style={{textAlign: 'center', color: '#f88114'}}><b>Dados dos Pesquisadores</b></h4>
                     <Item.Group>
                         <Item>
                         <Item.Image size='tiny' src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/Anderson.png?raw=true' />

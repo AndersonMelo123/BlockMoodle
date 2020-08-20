@@ -75,7 +75,7 @@ export default class Rltnotas extends Component {
         return (
             <Layout {...this.props}>
                 <div>
-                    <h3>Relatórios de Notas</h3>
+                    <h3 style={{color: '#f88114'}}>Relatórios de Notas</h3>
                     <hr/>
                     <Link prefetch href="/relatorios/notas">
                         <a>
@@ -83,7 +83,7 @@ export default class Rltnotas extends Component {
                                 floated="right"
                                 content="Gerar Relatório"
                                 icon="add"
-                                primary
+                                color='orange'
                             />
                         </a>
                     </Link>

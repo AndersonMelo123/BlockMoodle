@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Router from 'next/router';
-import { Form, Button, Input, Icon, Message, Grid, Segment, Confirm} from 'semantic-ui-react';
+import { Form, Button, Input, Icon, Message, Grid, Segment, Confirm, Image} from 'semantic-ui-react';
 import Layout from '../../components/layout';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
@@ -111,7 +111,7 @@ export default class RelatorioNew extends Component {
     render() {
         return (
             <Layout {...this.props}>
-                <h3>Relatório de Usuários</h3>
+                <h3 style={{color: '#f88114'}}>Relatório de Usuários</h3>
                 <hr/>
                 <Grid columns={2}>
                     <Grid.Row>
@@ -131,7 +131,7 @@ export default class RelatorioNew extends Component {
                                     </div>
                                 </Form.Field>
                                 
-                                <Button disabled={this.state.disabled} primary>
+                                <Button disabled={this.state.disabled} color='orange'>
                                     <Icon name='file alternate outline' />Gerar
                                 </Button>
 
@@ -154,6 +154,7 @@ export default class RelatorioNew extends Component {
                         </Grid.Column>
                         <Grid.Column>
                             <Segment raised>
+                                <Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/Capturar.PNG?raw=true' size='tiny' floated='left' style={{height:'96px', width: '46px'}}/>
                                 <b>Dica: </b>
                                 Informe uma descrição que seja a útil para identificar o seu relatório posteriormente.
                                 Ao clicar em "Gerar" o sistema irá criar um arquico PDF com o relatório solicitado, mas para isso será necessário

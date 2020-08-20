@@ -214,7 +214,7 @@ export default class CampaignIndex extends Component {
     render() {
         return (
             <Layout {...this.props}>
-                <h3>Relatórios registrados em Blockchain</h3>
+                <h3 style={{color: '#f88114'}}>Relatórios registrados em Blockchain</h3>
                 <hr/>
                 <Grid columns={2} divided>
                     <Grid.Row>

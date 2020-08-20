@@ -164,19 +164,18 @@ export default class CampaignIndex extends Component {
     render() {
         return (
             <Layout {...this.props}>
-                <h3>Relatórios registrados em Blockchain</h3>
+                <h3 style={{color: '#f88114'}}>Relatórios registrados em Blockchain</h3>
                 <hr/>
                 <Grid columns={2} divided>
                     <Grid.Row>
                         <Grid.Column width={9}>
                         <h4>Olá {this.props.session.nome}</h4>
                         <Segment raised>
-                            <Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/favicon.png?raw=true' size='tiny' floated='left' />
+                            <Image src='https://github.com/AndersonMelo123/BlockMoodle/blob/master/assets/Capturar.PNG?raw=true' size='tiny' floated='left' style={{height:'96px', width: '46px'}}/>
                             <b>Dica: </b>
-                            Informe uma descrição que seja a útil para identificar o seu relatório posteriormente.
-                            Ao clicar em "Gerar" o sistema irá criar um arquico PDF com o relatório solicitado, mas para isso será necessário
-                            a realização do pagento de uma taxa em Ether para que seja possível a inserção do relatório na Blockchain. 
-                            ealização do pagento de uma taxa em Ether para que seja possível a inserção do relatório na Blockchain.
+                            Nesta página é possível realizar a validação de um relatório que se encontra registrado na Blockchain.
+                            Para isso realize o upload de um arquivo no formato PDF, no campo ao lado. Caso o seu arquivo se encontre
+                            registrado no BlockMoodle uma mensagem de sucesso será exibida.
                         </Segment>
                         </Grid.Column>
                         <Grid.Column width={7}>
