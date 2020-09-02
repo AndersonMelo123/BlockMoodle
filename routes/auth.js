@@ -13,10 +13,28 @@ module.exports = (server) => {
     throw new Error('server should be an express instance')
   }
 
+//SELECT DISTINCT u.id, u.firstname,u.lastname,u.email FROM mdl_role_assignments rs INNER JOIN mdl_user u ON u.id=rs.userid  WHERE rs.roleid=5
+
+  async function getUmAluno(email) {
+    console.log('EMAIL ', email);
+    try {
+      const results = await pool.query(`SELECT a.id, a.firstname, a.lastname, a.email, a.phone2, a.institution, a.timecreated FROM mdl_user as a WHERE a.email = '${email}';`);
+      var jsonArray = JSON.parse(JSON.stringify(results[0]));
+      //console.log('rererere', jsonArray[0].id);
+      const nota = await pool.query(`SELECT i.itemname,g.finalgrade FROM mdl_grade_items i INNER JOIN mdl_grade_grades g ON i.id=g.itemid WHERE i.courseid=5 AND g.userid = '${jsonArray[0].id}';`);
+      
+      results.push(nota[0]);
+
+      //console.log('nota', nota[0]);
+      return results;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function getUser() {
     try {
       const results = await pool.query(`SELECT a.firstname, a.lastname, a.email, a.phone2, a.institution, a.timecreated FROM mdl_user as a`)
-      console.log('rererere', results);
       return results[0];
     } catch (error) {
       console.error(error);
@@ -74,6 +92,42 @@ module.exports = (server) => {
     }
   }
 
+  server.post('/auth/profile_aluno', async (req, resp) => {
+    const email = req.body.email
+    const results = await getUmAluno(email);
+
+    //console.log('RES------', results);
+
+    var timestamp = new Date().getTime();
+    var d = new Date(timestamp);
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
+    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
+    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas_aluno.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
+      if(err){
+        console.log('err1',err);
+      } else {
+        pdf.create(html, options).toFile("./arquivo_notas_aluno.pdf", (err, res) => {
+          if(err) {
+            console.log('err2',err);
+          }else{
+            fs.readFile('./arquivo_notas_aluno.pdf', 'utf-8', function (err, dataresult) {
+              if(err){
+                console.log('err3',err);
+              }
+              const a = sha256(dataresult);
+              console.log('A--------', a);
+              return resp.json({chave: a});
+            });
+          }
+        });
+      }
+    });
+    
+  })
+
   server.get('/auth/profile', async (req, resp) => {
     const results = await getUser();
     var timestamp = new Date().getTime();
@@ -126,6 +180,7 @@ module.exports = (server) => {
                 console.log('err3',err);
               }
               const a = sha256(dataresult);
+              console.log(a);
               return resp.json({chave: a});
             });
           }
@@ -343,6 +398,22 @@ module.exports = (server) => {
       fs.readdir(uploadFolder, (err, files) => {
       for (let i = 0; i < files.length; i++) {
         if (files[i] == 'arquivo_notas.pdf'){
+          relatorio.push(files[i]);
+        }	
+      }
+      res.download(relatorio[0]);
+    })	
+    } catch (error) {
+      res.status(500).send(err);
+    }
+  });
+
+  server.get('/api/files/get_notas', async (req, res) => {
+    var relatorio = [];
+    try {
+      fs.readdir(uploadFolder, (err, files) => {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i] == 'arquivo_notas_aluno.pdf'){
           relatorio.push(files[i]);
         }	
       }

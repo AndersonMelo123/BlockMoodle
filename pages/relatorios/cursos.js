@@ -62,7 +62,8 @@ export default class RelatorioNew extends Component {
         fetch('/auth/profile_cursos')
         .then(res => res.json())
         .then(res => {
-          return this.setState({hash: res.chave})
+            console.log(res.chave);
+            return this.setState({hash: res.chave})
         })
     }
 

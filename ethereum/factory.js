@@ -3,7 +3,7 @@ import Moodle from './build/Moodle.json';
 
 const instance = new web3.eth.Contract(
   JSON.parse(Moodle.interface),
-  '0x5b54a608E11399578972f2525702CfAdA6b5aD9F'
+  '0x6C5E23448cd79d5f4762Bbf4435d79baB9438674'
 );
 
 export default instance;

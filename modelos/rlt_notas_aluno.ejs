@@ -53,14 +53,41 @@
 
     <hr>
 
-    <h4>RELATÓRIO DE NOTAS</h4>
+    <h4>HiSTÓRICO DE NOTAS</h4>
     <p> Este relatório apresenta as notas dos usuários cadastrados na plataforma moodle, no dia <%= data %> às <%= hora %>.
     </p>
 
     <table>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Data de cadastro</th>
+      </tr>
+
+      <% var jsonArray = JSON.parse(JSON.stringify(notas[0])) %>
+      
+      <% for(var i=0; i<jsonArray.length; i++){ %>
         <tr>
-          <th>ID</th>
-          <th>Nome</th>
+          <td><%= jsonArray[i].firstname%> <%=jsonArray[i].lastname %></td>
+          <td><%= jsonArray[i].email %></td>
+          <td><%= jsonArray[i].phone2 %></td>
+
+          <td><%
+            var d = new Date(jsonArray[i].timecreated * 1000);
+            var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();%>
+            <%= date %>
+          </td>
+        </tr>
+      <% } %>
+    </table>
+
+    <br/>
+    <br/>
+
+    <table>
+        <tr>
           <th>Questionário</th>
           <th>Glossário</th>
           <th>Avaliação</th>
@@ -68,34 +95,26 @@
         
         </tr>
 
-        <% var jsonArray = JSON.parse(JSON.stringify(result[0])) %>
-        <% var notasArray = JSON.parse(JSON.stringify(result[3])) %>
 
-        <% console.log('RESDSDSDSD---------------------------------', notasArray.length) %>
-        <% console.log('RESDSDSDSD---------------------------------', notasArray[1].finalgrade) %>
+        <% var notasArray = JSON.parse(JSON.stringify(notas[2])) %>
 
         <% for(var i=0; i<jsonArray.length; i++){ %>
-			  <tr>      
-          <td><%=jsonArray[i].id%></td>
-          <td><%=jsonArray[i].firstname%> <%=jsonArray[i].lastname%></td>
-
+        <tr>      
           <% for(var j=0; j<notasArray.length; j++){ %>
-            <% if(notasArray[j].userid == jsonArray[i].id && notasArray[j].itemid != 2) { %>
+            <% if(notasArray[j].itemname != '') { %>
               <td><%= parseFloat(notasArray[j].finalgrade).toFixed(1) %></td>
             <% } %>
           <% } %>
           <% for(var j=0; j<notasArray.length; j++){ %>
-            <% if(jsonArray[i].id == notasArray[j].userid && notasArray[j].itemid == 2) { %>
+            <% if(notasArray[j].itemname == '') { %>
               <td><%= parseFloat(notasArray[j].finalgrade).toFixed(1) %></td>
             <% } %>
           <% } %>
-          
-
-			  </tr>
-		    <% } %>
+  
+        </tr>
+      <% } %>
     </table>
 
     <h4 style="color: black;">RECIFE, <%= data %></h4>
-
 </body>
 </html>
