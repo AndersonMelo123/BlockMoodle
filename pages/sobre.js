@@ -98,13 +98,13 @@ export default class CampaignIndex extends Component {
                             <Item.Header as='a'>Anderson Melo</Item.Header>
                             <Item.Meta>Mestrando em Informática Aplicada</Item.Meta>
                             <Item.Description></Item.Description>
-                            <Item.Extra>Possui graduação em Ciência da Computação - Universidade Federal Rural de Pernambuco - 
+                            <Item.Extra><b>Possui graduação em Ciência da Computação - Universidade Federal Rural de Pernambuco - 
                                 Unidade Acadêmica de Garanhuns (2018), mestrado acadêmico em andamento na área de sistemas distribuídos
                                  baseados em Blockchain - Universidade Federal Rural de Pernambuco. Tem experiência na área de Ciência da Computação,
                                   com ênfase em sistemas distribuídos, programação orientada a objeto, desenvolvimento para a web e para dispositivos 
                                   móveis e gerenciamento de bancos de dados. Desenvolveu pesquisas de iniciação cientifica sobre o uso de tecnologias
                                    na educação de jovens e adultos e utilização de ferramentas tecnológicas em sala de aula. Possui formação técnica na
-                                    área de administração, com ênfase em Recursos Humanos.
+                                    área de administração, com ênfase em Recursos Humanos.</b>
                             </Item.Extra>
                         </Item.Content>
                         </Item>
@@ -116,13 +116,13 @@ export default class CampaignIndex extends Component {
                             <Item.Header as='a'>Prof. Fernando Aires</Item.Header>
                             <Item.Meta>Orientador</Item.Meta>
                             <Item.Description></Item.Description>
-                            <Item.Extra>Possui graduação em Engenharia da Computação pela Universidade de Pernambuco (POLI/UPE 2004), 
+                            <Item.Extra><b>Possui graduação em Engenharia da Computação pela Universidade de Pernambuco (POLI/UPE 2004), 
                                 mestrado em Ciências da Computação pela Universidade Federal de Pernambuco (CIn/UFPE 2007) e doutorado em Ciência da Computação
                                  na Universidade Federal de Pernambuco (CIn/UFPE 2012), onde parte do doutoramento foi realizado no laboratório HP Labs 
                                  Palo Alto (Estados Unidos). Possui também pós-doutorado na Universidade de Coimbra, Portugal. Atualmente, 
                                  é professor adjunto da Universidade Federal Rural de Pernambuco. Tem experiência na área de Ciência da Computação, 
                                  com ênfase na parte de sistemas distribuídos, computação orientada a serviço (SOC), computação em nuvem, 
-                                 computação móvel, Internet das Coisas (IoT), avaliação de desempenho e segurança da informação.
+                                 computação móvel, Internet das Coisas (IoT), avaliação de desempenho e segurança da informação.</b>
                             </Item.Extra>
                         </Item.Content>
                         </Item>

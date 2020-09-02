@@ -13,22 +13,20 @@ module.exports = (server) => {
     throw new Error('server should be an express instance')
   }
 
-//SELECT DISTINCT u.id, u.firstname,u.lastname,u.email FROM mdl_role_assignments rs INNER JOIN mdl_user u ON u.id=rs.userid  WHERE rs.roleid=5
-
   async function getUmAluno(email) {
-    console.log('EMAIL ', email);
     try {
       const results = await pool.query(`SELECT a.id, a.firstname, a.lastname, a.email, a.phone2, a.institution, a.timecreated FROM mdl_user as a WHERE a.email = '${email}';`);
       var jsonArray = JSON.parse(JSON.stringify(results[0]));
-      //console.log('rererere', jsonArray[0].id);
       const nota = await pool.query(`SELECT i.itemname,g.finalgrade FROM mdl_grade_items i INNER JOIN mdl_grade_grades g ON i.id=g.itemid WHERE i.courseid=5 AND g.userid = '${jsonArray[0].id}';`);
-      
-      results.push(nota[0]);
+      const curso = await pool.query(`SELECT c.id, c.fullname, c.shortname, rs.timemodified FROM mdl_role_assignments rs INNER JOIN mdl_context e ON rs.contextid=e.id INNER JOIN  mdl_course c ON c.id = e.instanceid WHERE e.contextlevel=50 AND rs.roleid=5 AND rs.userid='${jsonArray[0].id}';`);
 
-      //console.log('nota', nota[0]);
+      results.push(nota[0]);
+      results.push(curso[0]);
+
       return results;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -52,15 +50,15 @@ module.exports = (server) => {
 
   async function getNotas() {
     try {
-      
+
       //SELECT u.id, u.firstname,u.lastname,u.email,u.username, g.finalgrade AS nota FROM mdl_course_modules cm INNER JOIN mdl_modules m ON m.id=cm.module INNER JOIN mdl_grade_items i ON i.itemmodule=m.name  INNER JOIN mdl_grade_grades g ON g.itemid=i.id INNER JOIN mdl_user u ON g.userid=u.id WHERE   i.itemtype='mod' AND cm.instance=i.iteminstance AND cm.id=2
       const results = await pool.query(`SELECT u.id, u.firstname, u.lastname FROM mdl_role_assignments rs INNER JOIN mdl_user u ON u.id=rs.userid INNER JOIN mdl_context e ON rs.contextid=e.id WHERE e.contextlevel=50 AND rs.roleid=5 AND e.instanceid=5`);
       const ativ = await pool.query('SELECT id, itemname, itemtype, gradetype, scaleid FROM mdl_grade_items WHERE courseid=5');
       const nota = await pool.query('SELECT g.id, g.itemid, g.userid, g.finalgrade FROM mdl_grade_grades g INNER JOIN mdl_grade_items i ON g.itemid=i.id WHERE i.courseid=5');
-    
+
       results.push(ativ[0]);
       results.push(nota[0]);
-      
+
       return results;
     } catch (error) {
       console.error(error);
@@ -83,7 +81,7 @@ module.exports = (server) => {
       results.push(url[0]);
       results.push(glossary[0]);
       results.push(feedback[0]);
-      
+
 
       //console.log('RESSSS', results);
       return results;
@@ -96,61 +94,60 @@ module.exports = (server) => {
     const email = req.body.email
     const results = await getUmAluno(email);
 
-    //console.log('RES------', results);
-
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
-    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
-    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+    var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var data = d.getDate() + '/' + months[d.getMonth()] + '/' + d.getFullYear();
+    var hora = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();;
+    var options = { "border": { "top": "1.5cm", "right": "1.5cm", "bottom": "1.5cm", "left": "1.5cm" } };
 
-    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas_aluno.ejs", {data: data, hora: hora, notas: results}, (err, html) => {
-      if(err){
-        console.log('err1',err);
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas_aluno.ejs", { data: data, hora: hora, notas: results }, (err, html) => {
+      if (err) {
+        console.log('err1', err);
+        return err;
       } else {
         pdf.create(html, options).toFile("./arquivo_notas_aluno.pdf", (err, res) => {
-          if(err) {
-            console.log('err2',err);
-          }else{
+          if (err) {
+            console.log('err2', err);
+            return err;
+          } else {
             fs.readFile('./arquivo_notas_aluno.pdf', 'utf-8', function (err, dataresult) {
-              if(err){
-                console.log('err3',err);
+              if (err) {
+                console.log('err3', err);
+                return err;
               }
               const a = sha256(dataresult);
-              console.log('A--------', a);
-              return resp.json({chave: a});
+              return resp.json({ chave: a });
             });
           }
         });
       }
     });
-    
   })
 
   server.get('/auth/profile', async (req, resp) => {
     const results = await getUser();
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
-    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
-    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+    var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var data = d.getDate() + '/' + months[d.getMonth()] + '/' + d.getFullYear();
+    var hora = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();;
+    var options = { "border": { "top": "1.5cm", "right": "1.5cm", "bottom": "1.5cm", "left": "1.5cm" } };
 
-    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_users.ejs", {data: data, hora: hora, alunos: results}, (err, html) => {
-      if(err){
-        console.log('err1',err);
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_users.ejs", { data: data, hora: hora, alunos: results }, (err, html) => {
+      if (err) {
+        console.log('err1', err);
       } else {
         pdf.create(html, options).toFile("./arquivo.pdf", (err, res) => {
-          if(err) {
-            console.log('err2',err);
-          }else{
+          if (err) {
+            console.log('err2', err);
+          } else {
             fs.readFile('./arquivo.pdf', 'utf-8', function (err, dataresult) {
-              if(err){
-                console.log('err3',err);
+              if (err) {
+                console.log('err3', err);
               }
               const a = sha256(dataresult);
-              return resp.json({chave: a});
+              return resp.json({ chave: a });
             });
           }
         });
@@ -162,26 +159,26 @@ module.exports = (server) => {
     const results = await getCurso();
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
-    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
-    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+    var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var data = d.getDate() + '/' + months[d.getMonth()] + '/' + d.getFullYear();
+    var hora = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();;
+    var options = { "border": { "top": "1.5cm", "right": "1.5cm", "bottom": "1.5cm", "left": "1.5cm" } };
 
-    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_cursos.ejs", {data: data, hora: hora, cursos: results}, (err, html) => {
-      if(err){
-        console.log('err1',err);
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_cursos.ejs", { data: data, hora: hora, cursos: results }, (err, html) => {
+      if (err) {
+        console.log('err1', err);
       } else {
         pdf.create(html, options).toFile("./arquivo_curso.pdf", (err, res) => {
-          if(err) {
-            console.log('err2',err);
-          }else{
+          if (err) {
+            console.log('err2', err);
+          } else {
             fs.readFile('./arquivo_curso.pdf', 'utf-8', function (err, dataresult) {
-              if(err){
-                console.log('err3',err);
+              if (err) {
+                console.log('err3', err);
               }
               const a = sha256(dataresult);
               console.log(a);
-              return resp.json({chave: a});
+              return resp.json({ chave: a });
             });
           }
         });
@@ -194,25 +191,25 @@ module.exports = (server) => {
     //console.log('RESSS ===>', results);
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
-    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
-    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+    var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var data = d.getDate() + '/' + months[d.getMonth()] + '/' + d.getFullYear();
+    var hora = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();;
+    var options = { "border": { "top": "1.5cm", "right": "1.5cm", "bottom": "1.5cm", "left": "1.5cm" } };
 
-    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas.ejs", {data: data, hora: hora, result: results}, (err, html) => {
-      if(err){
-        console.log('err1',err);
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_notas.ejs", { data: data, hora: hora, result: results }, (err, html) => {
+      if (err) {
+        console.log('err1', err);
       } else {
         pdf.create(html, options).toFile("./arquivo_notas.pdf", (err, res) => {
-          if(err) {
-            console.log('err2',err);
-          }else{
+          if (err) {
+            console.log('err2', err);
+          } else {
             fs.readFile('./arquivo_notas.pdf', 'utf-8', function (err, dataresult) {
-              if(err){
-                console.log('err3',err);
+              if (err) {
+                console.log('err3', err);
               }
               const a = sha256(dataresult);
-              return resp.json({chave: a});
+              return resp.json({ chave: a });
             });
           }
         });
@@ -224,25 +221,25 @@ module.exports = (server) => {
     const results = await getAtividades();
     var timestamp = new Date().getTime();
     var d = new Date(timestamp);
-    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    var data = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear(); 
-    var hora = d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();;
-    var options = {"border": {"top": "1.5cm","right": "1.5cm","bottom": "1.5cm","left": "1.5cm"}};
+    var months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    var data = d.getDate() + '/' + months[d.getMonth()] + '/' + d.getFullYear();
+    var hora = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();;
+    var options = { "border": { "top": "1.5cm", "right": "1.5cm", "bottom": "1.5cm", "left": "1.5cm" } };
 
-    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_atividades.ejs", {data: data, hora: hora, atividades: results}, (err, html) => {
-      if(err){
-        console.log('err1',err);
+    ejs.renderFile("B:/Documentos/GIT/BlockMoodle/modelos/rlt_atividades.ejs", { data: data, hora: hora, atividades: results }, (err, html) => {
+      if (err) {
+        console.log('err1', err);
       } else {
         pdf.create(html, options).toFile("./arquivo_atividades.pdf", (err, res) => {
-          if(err) {
-            console.log('err2',err);
-          }else{
+          if (err) {
+            console.log('err2', err);
+          } else {
             fs.readFile('./arquivo_atividades.pdf', 'utf-8', function (err, dataresult) {
-              if(err){
-                console.log('err3',err);
+              if (err) {
+                console.log('err3', err);
               }
               const a = sha256(dataresult);
-              return resp.json({chave: a});
+              return resp.json({ chave: a });
             });
           }
         });
@@ -256,31 +253,31 @@ module.exports = (server) => {
     if (email && password) {
       const results = await getUsuario(email)
       if (results[0][0]) {
-          bcrypt.compare(password, results[0][0].password).then(function(response) {
-            if (response == true) {
-              if(results[0][0].tipo == 0){
-                req.session.loggedin = true
-                req.session.email = email
-                req.session.nome = results[0][0].name
-                req.session.tipo = "Admin"
-                return res.json(req.session)
-              } else if (results[0][0].tipo == 1){
-                req.session.loggedin = true
-                req.session.email = email
-                req.session.nome = results[0][0].name
-                req.session.tipo = "User"
-                return res.json(req.session)
-              }
-              
-            } else {
-              return res.json({message: 'Senha incorreta!'})
+        bcrypt.compare(password, results[0][0].password).then(function (response) {
+          if (response == true) {
+            if (results[0][0].tipo == 0) {
+              req.session.loggedin = true
+              req.session.email = email
+              req.session.nome = results[0][0].name
+              req.session.tipo = "Admin"
+              return res.json(req.session)
+            } else if (results[0][0].tipo == 1) {
+              req.session.loggedin = true
+              req.session.email = email
+              req.session.nome = results[0][0].name
+              req.session.tipo = "User"
+              return res.json(req.session)
             }
-          })
+
+          } else {
+            return res.json({ message: 'Senha incorreta!' })
+          }
+        })
       } else {
-        return res.json({message: 'Usuário não encontrado!'})
+        return res.json({ message: 'Usuário não encontrado!' })
       }
     } else {
-      return res.json({message: 'Por favor, informe email e senha!'})
+      return res.json({ message: 'Por favor, informe email e senha!' })
     }
   })
 
@@ -288,31 +285,31 @@ module.exports = (server) => {
     try {
       const results = await poolUser.query(`SELECT * FROM users WHERE email='${email}';`)
       return results
-    }catch(e){
+    } catch (e) {
       console.error(e)
     }
   }
-//============================================================================================================
+  //============================================================================================================
   server.post('/auth/signup', async (req, res) => {
     var name = req.body.name
     var address = req.body.address
     var email = req.body.email
     var password = req.body.password
-    
+
     if (name && address && email && password) {
-      bcrypt.hash(password, saltRounds).then(async function(hash) {
+      bcrypt.hash(password, saltRounds).then(async function (hash) {
         const results = await addUser(name, address, email, hash)
         if (results && results.length > 0) {
-          bcrypt.hash(email + hash, saltRounds).then(function(hash) {
+          bcrypt.hash(email + hash, saltRounds).then(function (hash) {
             sendVerificationEmail(email, "http://" + req.headers.host + "/auth/verify?email=" + email + "&hash=" + hash)
           })
-          return res.json({email: email})
+          return res.json({ email: email })
         } else {
-          return res.json({message: 'Email já cadastrado: ' + email})
+          return res.json({ message: 'Email já cadastrado: ' + email })
         }
       })
     } else {
-      return res.json({message: 'Por favor, preencha todos os campos!'})
+      return res.json({ message: 'Por favor, preencha todos os campos!' })
     }
   })
 
@@ -320,11 +317,11 @@ module.exports = (server) => {
     try {
       const results = await poolUser.query(`INSERT INTO users (name, address, email, password) VALUES ("${name}", "${address}","${email}", "${password}");`)
       return results
-    }catch(e){
+    } catch (e) {
       console.error(e)
     }
   }
-//==========================================================================================================
+  //==========================================================================================================
   server.get('/auth/signout', (req, res) => {
     if (req.session && req.session.loggedin) {
       req.session.destroy()
@@ -359,18 +356,18 @@ module.exports = (server) => {
   //=========================================================================
   const fileWorker = require('../controllers/file.controller');
   const uploadFolder = 'B:/Documentos/GIT/BlockMoodle/';
-	
+
   server.get('/api/files/getall', async (req, res) => {
     var relatorio = [];
     try {
       fs.readdir(uploadFolder, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i] == 'arquivo.pdf'){
-          relatorio.push(files[i]);
-        }	
-      }
-      res.download(relatorio[0]);
-    })	
+        for (let i = 0; i < files.length; i++) {
+          if (files[i] == 'arquivo.pdf') {
+            relatorio.push(files[i]);
+          }
+        }
+        res.download(relatorio[0]);
+      })
     } catch (error) {
       res.status(500).send(err);
     }
@@ -380,13 +377,13 @@ module.exports = (server) => {
     var relatorio = [];
     try {
       fs.readdir(uploadFolder, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i] == 'arquivo_curso.pdf'){
-          relatorio.push(files[i]);
-        }	
-      }
-      res.download(relatorio[0]);
-    })	
+        for (let i = 0; i < files.length; i++) {
+          if (files[i] == 'arquivo_curso.pdf') {
+            relatorio.push(files[i]);
+          }
+        }
+        res.download(relatorio[0]);
+      })
     } catch (error) {
       res.status(500).send(err);
     }
@@ -396,13 +393,13 @@ module.exports = (server) => {
     var relatorio = [];
     try {
       fs.readdir(uploadFolder, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i] == 'arquivo_notas.pdf'){
-          relatorio.push(files[i]);
-        }	
-      }
-      res.download(relatorio[0]);
-    })	
+        for (let i = 0; i < files.length; i++) {
+          if (files[i] == 'arquivo_notas.pdf') {
+            relatorio.push(files[i]);
+          }
+        }
+        res.download(relatorio[0]);
+      })
     } catch (error) {
       res.status(500).send(err);
     }
@@ -412,13 +409,13 @@ module.exports = (server) => {
     var relatorio = [];
     try {
       fs.readdir(uploadFolder, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i] == 'arquivo_notas_aluno.pdf'){
-          relatorio.push(files[i]);
-        }	
-      }
-      res.download(relatorio[0]);
-    })	
+        for (let i = 0; i < files.length; i++) {
+          if (files[i] == 'arquivo_notas_aluno.pdf') {
+            relatorio.push(files[i]);
+          }
+        }
+        res.download(relatorio[0]);
+      })
     } catch (error) {
       res.status(500).send(err);
     }
@@ -428,57 +425,57 @@ module.exports = (server) => {
     var relatorio = [];
     try {
       fs.readdir(uploadFolder, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i] == 'arquivo_atividades.pdf'){
-          relatorio.push(files[i]);
-        }	
-      }
-      res.download(relatorio[0]);
-    })	
+        for (let i = 0; i < files.length; i++) {
+          if (files[i] == 'arquivo_atividades.pdf') {
+            relatorio.push(files[i]);
+          }
+        }
+        res.download(relatorio[0]);
+      })
     } catch (error) {
       res.status(500).send(err);
     }
   });
-  
+
   server.post('/api/files/upload', async (req, res) => {
     try {
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-        } else {
-            let myFile = req.files.myFile;
-            myFile.mv('./uploads/' + myFile.name);
-            res.send({
-                status: true,
-                message: 'File is uploaded',
-                data: {
-                    name: myFile.name,
-                    mimetype: myFile.mimetype,
-                    size: myFile.size,
-                }
-            });
-        }
+      if (!req.files) {
+        res.send({
+          status: false,
+          message: 'No file uploaded'
+        });
+      } else {
+        let myFile = req.files.myFile;
+        myFile.mv('./uploads/' + myFile.name);
+        res.send({
+          status: true,
+          message: 'File is uploaded',
+          data: {
+            name: myFile.name,
+            mimetype: myFile.mimetype,
+            size: myFile.size,
+          }
+        });
+      }
     } catch (err) {
-        res.status(500).send(err);
+      res.status(500).send(err);
     }
   });
 
-  server.post('/api/files/validar', async (req, res)=>{
+  server.post('/api/files/validar', async (req, res) => {
     const a = req.body;
     const hash = []
     fs.readFile('./uploads/' + a.nameFile, 'utf-8', function (err, dataresult) {
-      if(err){
-        console.log('err3',err);
-      }  
+      if (err) {
+        console.log('err3', err);
+      }
       hash.push(sha256(dataresult));
 
       res.send({
         status: true,
         message: 'File is valid',
         data: {
-            hash: hash[0]
+          hash: hash[0]
         }
       });
     });

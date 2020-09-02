@@ -53,10 +53,15 @@
 
     <hr>
 
+    <% var jsonArray = JSON.parse(JSON.stringify(notas[0])) %>
+    <% var cursoArray = JSON.parse(JSON.stringify(notas[3])) %>
+
     <h4>HiSTÓRICO DE NOTAS</h4>
-    <p> Este relatório apresenta as notas dos usuários cadastrados na plataforma moodle, no dia <%= data %> às <%= hora %>.
+    <p> Este relatório apresenta os dados do(a) aluno(a) <%= jsonArray[0].firstname%> <%=jsonArray[0].lastname %> 
+      matriculado(a) no curso <%= cursoArray[0].fullname %> oferecido pela plataforma BlockMoodle.
     </p>
 
+    <h4>Dados pessoais</h4>
     <table>
       <tr>
         <th>Nome</th>
@@ -64,9 +69,7 @@
         <th>Telefone</th>
         <th>Data de cadastro</th>
       </tr>
-
-      <% var jsonArray = JSON.parse(JSON.stringify(notas[0])) %>
-      
+    
       <% for(var i=0; i<jsonArray.length; i++){ %>
         <tr>
           <td><%= jsonArray[i].firstname%> <%=jsonArray[i].lastname %></td>
@@ -86,6 +89,33 @@
     <br/>
     <br/>
 
+    <h4>Cursos Matriculados</h4>
+    <table>
+      <tr>
+        <th>Sigla</th>
+        <th>Curso</th>
+        <th>Data da matrícula</th>
+      </tr>
+
+      <% for(var i=0; i<cursoArray.length; i++){ %>
+        <tr>
+          <td><%= cursoArray[i].fullname %></td>
+          <td><%= cursoArray[i].shortname%></td>
+        
+          <td><%
+            var d = new Date(cursoArray[i].timemodified * 1000);
+            var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            var date = d.getDate() +'/'+ months[d.getMonth()] +'/'+ d.getFullYear();%>
+            <%= date %>
+          </td>
+        </tr>
+      <% } %>
+    </table>
+
+    <br/>
+    <br/>
+
+    <h4>Notas</h4>
     <table>
         <tr>
           <th>Questionário</th>
@@ -115,6 +145,6 @@
       <% } %>
     </table>
 
-    <h4 style="color: black;">RECIFE, <%= data %></h4>
+    <h4 style="color: black;">RECIFE, <%= data %> às <%= hora %></h4>
 </body>
 </html>
